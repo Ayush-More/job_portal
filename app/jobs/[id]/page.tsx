@@ -82,9 +82,17 @@ export default function JobDetailPage() {
         return
       }
 
-      const { clientSecret } = await paymentResponse.json()
+      const paymentData = await paymentResponse.json()
 
-      // Redirect to Stripe Checkout (simplified flow)
+      // Check if this is a mock payment (development mode)
+      if (paymentData.mockPayment) {
+        alert("✅ Application submitted successfully! (Development mode - payment completed automatically)")
+        router.push("/dashboard/job-seeker")
+        return
+      }
+
+      // Real Stripe payment flow
+      const { clientSecret } = paymentData
       const stripe = await stripePromise
       
       if (!stripe) {

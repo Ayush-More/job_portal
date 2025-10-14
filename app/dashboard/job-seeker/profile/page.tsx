@@ -13,6 +13,7 @@ export default function JobSeekerProfilePage() {
   const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
   const [profile, setProfile] = useState<any>(null)
   const [skills, setSkills] = useState("")
 
@@ -22,48 +23,131 @@ export default function JobSeekerProfilePage() {
     }
   }, [session, router])
 
+  // Fetch existing profile data
+  useEffect(() => {
+    async function fetchProfile() {
+      if (!session?.user) return
+      
+      try {
+        const response = await fetch("/api/profile/job-seeker")
+        if (response.ok) {
+          const profileData = await response.json()
+          setProfile(profileData)
+          setSkills(profileData.skills?.join(", ") || "")
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error)
+      } finally {
+        setFetching(false)
+      }
+    }
+
+    if (session?.user.role === "JOB_SEEKER") {
+      fetchProfile()
+    }
+  }, [session])
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
 
-    const formData = new FormData(e.currentTarget)
-    const data = {
-      phone: formData.get("phone") as string,
-      location: formData.get("location") as string,
-      skills: skills.split(",").map(s => s.trim()).filter(Boolean),
-      experience: parseInt(formData.get("experience") as string) || 0,
-      education: formData.get("education") as string,
-      bio: formData.get("bio") as string,
-    }
-
     try {
+      const formData = new FormData(e.currentTarget)
+      const resumeFile = formData.get("resume") as File
+
+      // Prepare profile data
+      const profileData = {
+        phone: formData.get("phone") as string,
+        location: formData.get("location") as string,
+        skills: skills.split(",").map(s => s.trim()).filter(Boolean),
+        experience: parseInt(formData.get("experience") as string) || 0,
+        education: formData.get("education") as string,
+        bio: formData.get("bio") as string,
+      }
+
+      let resumeUrl = profile?.resume // Keep existing resume if no new one uploaded
+
+      // Handle resume upload if a file is selected
+      if (resumeFile && resumeFile.size > 0) {
+        const uploadFormData = new FormData()
+        uploadFormData.append("file", resumeFile)
+        uploadFormData.append("type", "resume")
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        })
+
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          resumeUrl = uploadData.url
+        } else {
+          alert("Failed to upload resume. Profile saved without resume.")
+        }
+      }
+
+      // Update profile with resume URL
+      const finalData = {
+        ...profileData,
+        resume: resumeUrl,
+      }
+
       const response = await fetch("/api/profile/job-seeker", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(finalData),
       })
 
       if (response.ok) {
         alert("Profile updated successfully!")
         router.push("/dashboard/job-seeker")
       } else {
-        alert("Failed to update profile")
+        const error = await response.json()
+        alert(error.error || "Failed to update profile")
       }
     } catch (error) {
+      console.error("Profile update error:", error)
       alert("Something went wrong")
     } finally {
       setLoading(false)
     }
   }
 
+  if (fetching) {
+    return (
+      <div className="container mx-auto px-4 py-8 align-middle">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">My Profile</h1>
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
+        <Card className="max-w-3xl align-middle animate-pulse">
+          <CardHeader>
+            <div className="h-6 bg-gray-200 rounded w-1/3 mb-2" />
+            <div className="h-4 bg-gray-200 rounded w-1/2" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/4" />
+                  <div className="h-10 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 align-middle">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">My Profile</h1>
         <p className="text-gray-600">Update your professional information</p>
       </div>
 
-      <Card className="max-w-3xl">
+      <Card className="max-w-3xl align-middle">
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>
@@ -79,6 +163,7 @@ export default function JobSeekerProfilePage() {
                 name="phone"
                 type="tel"
                 placeholder="+1 (555) 123-4567"
+                defaultValue={profile?.phone || ""}
                 disabled={loading}
               />
             </div>
@@ -89,6 +174,7 @@ export default function JobSeekerProfilePage() {
                 id="location"
                 name="location"
                 placeholder="e.g. San Francisco, CA"
+                defaultValue={profile?.location || ""}
                 disabled={loading}
               />
             </div>
@@ -114,6 +200,7 @@ export default function JobSeekerProfilePage() {
                 type="number"
                 min="0"
                 placeholder="5"
+                defaultValue={profile?.experience || ""}
                 disabled={loading}
               />
             </div>
@@ -124,6 +211,7 @@ export default function JobSeekerProfilePage() {
                 id="education"
                 name="education"
                 placeholder="e.g. BS in Computer Science, Stanford University"
+                defaultValue={profile?.education || ""}
                 disabled={loading}
               />
             </div>
@@ -135,6 +223,7 @@ export default function JobSeekerProfilePage() {
                 name="bio"
                 placeholder="Tell employers about yourself, your experience, and what you're looking for..."
                 rows={5}
+                defaultValue={profile?.bio || ""}
                 disabled={loading}
               />
             </div>
@@ -153,6 +242,13 @@ export default function JobSeekerProfilePage() {
                 <p className="text-sm text-gray-500">
                   PDF, DOC, or DOCX format (max 5MB)
                 </p>
+                {profile?.resume && (
+                  <div className="mt-2">
+                    <p className="text-sm text-green-600">
+                      ✅ Current resume: <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="underline">View Resume</a>
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 

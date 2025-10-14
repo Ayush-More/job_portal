@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Only initialize Resend if API key is available
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function sendEmail({
   to,
@@ -11,6 +12,15 @@ export async function sendEmail({
   subject: string
   html: string
 }) {
+  // If no Resend API key is configured, log the email and return success (for development)
+  if (!resend) {
+    console.log('📧 Email would be sent (RESEND_API_KEY not configured):')
+    console.log(`To: ${to}`)
+    console.log(`Subject: ${subject}`)
+    console.log(`HTML: ${html.substring(0, 100)}...`)
+    return { success: true, data: null }
+  }
+
   try {
     const data = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'noreply@jobportal.com',

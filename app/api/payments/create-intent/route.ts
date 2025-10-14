@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { createPaymentIntent } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
-    if (!session || session.user.role !== "JOB_SEEKER") {
+    if (!session?.user || session.user.role !== "JOB_SEEKER") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -46,7 +45,49 @@ export async function POST(req: Request) {
       )
     }
 
-    // Create payment intent
+    // Check if Stripe is configured
+    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === "sk_test_placeholder") {
+      // For development without Stripe configured, create a mock payment
+      const payment = await prisma.payment.upsert({
+        where: { applicationId },
+        update: {
+          status: "COMPLETED", // Mark as completed for development
+        },
+        create: {
+          applicationId,
+          amount: application.job.applicationFee,
+          status: "COMPLETED", // Mark as completed for development
+        },
+      })
+
+      // Create guarantee for development
+      const guaranteeExpiresAt = new Date()
+      guaranteeExpiresAt.setDate(
+        guaranteeExpiresAt.getDate() + application.job.guaranteePeriod
+      )
+
+      await prisma.guarantee.upsert({
+        where: { applicationId },
+        update: {
+          terms: application.job.guaranteeTerms,
+          expiresAt: guaranteeExpiresAt,
+        },
+        create: {
+          applicationId,
+          terms: application.job.guaranteeTerms,
+          expiresAt: guaranteeExpiresAt,
+        },
+      })
+
+      return NextResponse.json({
+        clientSecret: "mock_client_secret_for_development",
+        paymentId: payment.id,
+        mockPayment: true,
+        message: "Payment completed (Stripe not configured - development mode)"
+      })
+    }
+
+    // Create payment intent with real Stripe
     const paymentIntent = await createPaymentIntent(
       application.job.applicationFee,
       applicationId,

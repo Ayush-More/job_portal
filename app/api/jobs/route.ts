@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { jobSchema } from "@/lib/validations"
 
@@ -53,9 +52,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
 
-    if (!session || session.user.role !== "COMPANY") {
+    if (!session || session.user?.role !== "COMPANY") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 

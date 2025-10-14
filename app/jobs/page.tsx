@@ -31,9 +31,11 @@ export default function JobsPage() {
     try {
       const response = await fetch(`/api/jobs?${params.toString()}`)
       const data = await response.json()
-      setJobs(data)
+      // Ensure data is always an array
+      setJobs(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error fetching jobs:", error)
+      setJobs([])
     } finally {
       setLoading(false)
     }

@@ -21,6 +21,7 @@ export const companyProfileSchema = z.object({
   website: z.string().url("Invalid URL").optional().or(z.literal("")),
   location: z.string().optional(),
   size: z.string().optional(),
+  logo: z.string().url("Invalid logo URL").optional().or(z.literal("")),
 })
 
 // Job Seeker Validations
@@ -31,6 +32,7 @@ export const jobSeekerProfileSchema = z.object({
   experience: z.number().min(0).optional(),
   education: z.string().optional(),
   bio: z.string().optional(),
+  resume: z.string().url("Invalid resume URL").optional().or(z.literal("")),
 })
 
 // Job Validations
