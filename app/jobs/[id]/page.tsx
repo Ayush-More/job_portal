@@ -10,10 +10,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { MapPin, DollarSign, Briefcase, Clock, Shield, Building } from "lucide-react"
 import { formatCurrency, formatDate } from "@/lib/utils"
-import { loadStripe } from "@stripe/stripe-js"
+import Script from "next/script"
 import Link from "next/link"
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
+// Razorpay script will be injected via <Script>
 
 export default function JobDetailPage() {
   const params = useParams()
@@ -68,8 +68,8 @@ export default function JobDetailPage() {
 
       const application = await appResponse.json()
 
-      // Create payment intent
-      const paymentResponse = await fetch("/api/payments/create-intent", {
+      // Create Razorpay order
+      const paymentResponse = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,28 +82,53 @@ export default function JobDetailPage() {
         return
       }
 
-      const paymentData = await paymentResponse.json()
+      const orderData = await paymentResponse.json()
 
-      // Check if this is a mock payment (development mode)
-      if (paymentData.mockPayment) {
-        alert("✅ Application submitted successfully! (Development mode - payment completed automatically)")
-        router.push("/dashboard/job-seeker")
-        return
-      }
-
-      // Real Stripe payment flow
-      const { clientSecret } = paymentData
-      const stripe = await stripePromise
-      
-      if (!stripe) {
+      // @ts-ignore
+      if (typeof window === "undefined" || !window.Razorpay) {
         alert("Payment system not available")
         return
       }
 
-      // For now, we'll show a success message
-      // In production, you'd redirect to a proper checkout page
-      alert("Application submitted! Please complete payment to finalize.")
-      router.push("/dashboard/job-seeker")
+      // @ts-ignore
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Job Application Fee",
+        description: orderData.description,
+        order_id: orderData.orderId,
+        prefill: orderData.prefill,
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch("/api/payments/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                applicationId: orderData.applicationId,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            })
+
+            if (!verifyRes.ok) {
+              const err = await verifyRes.json().catch(() => ({}))
+              throw new Error(err.error || "Payment verification failed")
+            }
+
+            alert("Application submitted and payment completed!")
+            router.push("/dashboard/job-seeker")
+          } catch (e) {
+            alert((e as Error).message)
+          }
+        },
+        theme: { color: "#2563eb" },
+      }
+
+      // @ts-ignore
+      const rzp = new window.Razorpay(options)
+      rzp.open()
     } catch (error) {
       console.error("Application error:", error)
       alert("Something went wrong")
@@ -149,6 +174,8 @@ export default function JobDetailPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Razorpay script */}
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
       <div className="mb-4">
         <Link href="/jobs">
           <Button variant="ghost">← Back to Jobs</Button>

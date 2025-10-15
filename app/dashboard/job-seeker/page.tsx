@@ -51,6 +51,8 @@ export default async function JobSeekerDashboard() {
     REJECTED: "destructive",
   } as const
 
+  const acceptedCount = jobSeeker.applications.filter(a => a.status === "ACCEPTED").length
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -80,6 +82,16 @@ export default async function JobSeekerDashboard() {
                 ["SUBMITTED", "UNDER_REVIEW", "INTERVIEW_SCHEDULED"].includes(a.status)
               ).length}
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Accepted Applications</CardTitle>
+            <Briefcase className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-700">{acceptedCount}</div>
           </CardContent>
         </Card>
 

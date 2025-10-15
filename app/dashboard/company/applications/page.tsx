@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Calendar, User, Mail, Phone, MapPin, FileText, Eye } from "lucide-react"
 import { formatDate } from "@/lib/utils"
+import ApplicationActions from "@/components/company/ApplicationActions"
 
 export default async function CompanyApplicationsPage() {
   const session = await auth()
@@ -115,7 +116,11 @@ export default async function CompanyApplicationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3 items-center">
+                    <ApplicationActions
+                      applicationId={application.id}
+                      initialStatus={application.status}
+                    />
                     <Link href={`/dashboard/company/applications/${application.id}`}>
                       <Button variant="outline" size="sm">
                         <Eye className="h-4 w-4 mr-1" />
