@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
-import Razorpay from "razorpay"
-import crypto from "crypto"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { razorpay } from "@/lib/razorpay"
 
 export async function POST(req: Request) {
   try {
@@ -34,11 +33,6 @@ export async function POST(req: Request) {
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       return NextResponse.json({ error: "Payment gateway not configured" }, { status: 503 })
     }
-
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    })
 
     // Create or update payment record to PENDING
     const payment = await prisma.payment.upsert({

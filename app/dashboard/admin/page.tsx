@@ -6,10 +6,64 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 async function getStats() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/admin/stats`, {
-    cache: "no-store",
+  // Use direct database query for SSR instead of fetch
+  const { prisma } = await import("@/lib/prisma")
+  
+  const [
+    totalUsers,
+    totalCompanies,
+    totalJobSeekers,
+    totalJobs,
+    activeJobs,
+    totalApplications,
+    totalPayments,
+    completedPayments,
+    totalRefunds,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.company.count(),
+    prisma.jobSeeker.count(),
+    prisma.job.count(),
+    prisma.job.count({ where: { status: "ACTIVE" } }),
+    prisma.application.count(),
+    prisma.payment.count(),
+    prisma.payment.count({ where: { status: "COMPLETED" } }),
+    prisma.refund.count(),
+  ])
+
+  // Calculate revenue
+  const payments = await prisma.payment.findMany({
+    where: { status: "COMPLETED" },
+    select: { amount: true },
   })
-  return response.json()
+
+  const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0)
+
+  return {
+    users: {
+      total: totalUsers,
+      companies: totalCompanies,
+      jobSeekers: totalJobSeekers,
+    },
+    jobs: {
+      total: totalJobs,
+      active: activeJobs,
+    },
+    applications: {
+      total: totalApplications,
+    },
+    payments: {
+      total: totalPayments,
+      completed: completedPayments,
+    },
+    refunds: {
+      total: totalRefunds,
+    },
+    revenue: {
+      total: totalRevenue,
+      formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
+    },
+  }
 }
 
 export default async function AdminDashboard() {

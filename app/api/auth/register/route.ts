@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { registerSchema } from "@/lib/validations"
 import { sendEmail, emailTemplates } from "@/lib/email"
+import { sendVerificationEmail } from "@/lib/email-verification"
 
 export async function POST(req: Request) {
   try {
@@ -24,13 +25,14 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    // Create user and profile
+    // Create user and profile (email not verified initially)
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
         password: hashedPassword,
         name: validatedData.name,
         role: validatedData.role,
+        emailVerified: null, // Email not verified initially
         ...(validatedData.role === "COMPANY"
           ? {
               company: {
@@ -47,15 +49,15 @@ export async function POST(req: Request) {
       },
     })
 
-    // Send welcome email
-    await sendEmail({
-      to: user.email,
-      subject: "Welcome to JobPortal Pro",
-      html: emailTemplates.welcome(user.name || "there"),
-    })
+    // Send verification email instead of welcome email
+    await sendVerificationEmail(user.email, user.name || "there")
 
     return NextResponse.json(
-      { message: "User created successfully", userId: user.id },
+      { 
+        message: "User created successfully. Please check your email to verify your account.", 
+        userId: user.id,
+        emailSent: true
+      },
       { status: 201 }
     )
   } catch (error: any) {

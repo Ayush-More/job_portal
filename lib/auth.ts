@@ -40,6 +40,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Invalid credentials")
         }
 
+        // Check if email is verified
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before logging in. Check your inbox for a verification link.")
+        }
+
         return {
           id: user.id,
           email: user.email,

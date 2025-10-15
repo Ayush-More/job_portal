@@ -1,7 +1,23 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
-// Only initialize Resend if API key is available
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+// Create Gmail SMTP transporter
+const createTransporter = () => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return null
+  }
+
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  })
+}
+
+const transporter = createTransporter()
 
 export async function sendEmail({
   to,
@@ -12,9 +28,9 @@ export async function sendEmail({
   subject: string
   html: string
 }) {
-  // If no Resend API key is configured, log the email and return success (for development)
-  if (!resend) {
-    console.log('📧 Email would be sent (RESEND_API_KEY not configured):')
+  // If no SMTP credentials are configured, log the email and return success (for development)
+  if (!transporter) {
+    console.log('📧 Email would be sent (SMTP not configured):')
     console.log(`To: ${to}`)
     console.log(`Subject: ${subject}`)
     console.log(`HTML: ${html.substring(0, 100)}...`)
@@ -22,16 +38,19 @@ export async function sendEmail({
   }
 
   try {
-    const data = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'noreply@jobportal.com',
+    const mailOptions = {
+      from: process.env.EMAIL_USER, // Gmail will use the authenticated user
       to,
       subject,
       html,
-    })
+    }
 
-    return { success: true, data }
+    const info = await transporter.sendMail(mailOptions)
+    console.log('📧 Email sent successfully:', info.messageId)
+    
+    return { success: true, data: info }
   } catch (error) {
-    console.error('Email send error:', error)
+    console.error('📧 Email send error:', error)
     return { success: false, error }
   }
 }
@@ -41,6 +60,30 @@ export const emailTemplates = {
     <h1>Welcome to JobPortal Pro!</h1>
     <p>Hi ${name},</p>
     <p>Thank you for joining our platform. We're excited to have you here!</p>
+  `,
+  
+  verifyEmail: (name: string, verificationUrl: string) => `
+    <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+      <h1 style="color: #333; text-align: center;">Verify Your Email Address</h1>
+      <p>Hi ${name},</p>
+      <p>Thank you for registering with JobPortal Pro! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${verificationUrl}" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email Address</a>
+      </div>
+      
+      <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
+      
+      <p><strong>Important:</strong> This verification link will expire in 24 hours.</p>
+      
+      <p>If you didn't create an account with JobPortal Pro, please ignore this email.</p>
+      
+      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+      <p style="color: #666; font-size: 12px; text-align: center;">
+        This email was sent from JobPortal Pro. Please do not reply to this email.
+      </p>
+    </div>
   `,
   
   applicationReceived: (jobTitle: string, applicantName: string) => `
