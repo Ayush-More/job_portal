@@ -5,7 +5,8 @@ A revolutionary job portal platform with a pay-to-apply model and placement guar
 ## Deployment Status
 ✅ Fixed middleware size issue  
 ✅ Fixed Next.js 15 compatibility  
-✅ Ready for production deployment
+✅ Ready for production deployment  
+🔄 Updated database connection - redeploying...
 
 ## 🚀 Features
 
