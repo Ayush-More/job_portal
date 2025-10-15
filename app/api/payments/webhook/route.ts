@@ -6,12 +6,20 @@ import { sendEmail, emailTemplates } from "@/lib/email"
 
 export async function POST(req: Request) {
   const body = await req.text()
-  const signature = headers().get("stripe-signature")
+  const headersList = await headers()
+  const signature = headersList.get("stripe-signature")
 
   if (!signature) {
     return NextResponse.json(
       { error: "No signature" },
       { status: 400 }
+    )
+  }
+
+  if (!stripe) {
+    return NextResponse.json(
+      { error: "Stripe not configured" },
+      { status: 500 }
     )
   }
 
@@ -41,7 +49,7 @@ export async function POST(req: Request) {
           where: { stripePaymentId: paymentIntent.id },
           data: {
             status: "COMPLETED",
-            receiptUrl: paymentIntent.charges.data[0]?.receipt_url,
+            receiptUrl: null, // Receipt URL not available in webhook
           },
           include: {
             application: {

@@ -5,7 +5,7 @@ import { sendEmail, emailTemplates } from "@/lib/email"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -14,12 +14,13 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const body = await req.json()
     const { status } = body
 
     // Get application with job details
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         job: {
           include: {
@@ -52,7 +53,7 @@ export async function PATCH(
 
     // Update application status
     const updatedApplication = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
     })
 

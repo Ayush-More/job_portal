@@ -6,7 +6,7 @@ import { sendEmail, emailTemplates } from "@/lib/email"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -15,11 +15,12 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const body = await req.json()
     const { status, adminNotes } = body
 
     const refund = await prisma.refund.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         payment: {
           include: {
@@ -53,7 +54,7 @@ export async function PATCH(
     }
 
     const updatedRefund = await prisma.refund.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status,
         adminNotes,

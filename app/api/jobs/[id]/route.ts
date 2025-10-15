@@ -5,11 +5,12 @@ import { jobSchema } from "@/lib/validations"
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const job = await prisma.job.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         company: {
           select: {
@@ -39,7 +40,7 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -48,6 +49,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const company = await prisma.company.findUnique({
       where: { userId: session.user.id },
     })
@@ -58,7 +60,7 @@ export async function PATCH(
 
     // Verify job belongs to company
     const job = await prisma.job.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!job || job.companyId !== company.id) {
@@ -69,7 +71,7 @@ export async function PATCH(
     const validatedData = jobSchema.partial().parse(body)
 
     const updatedJob = await prisma.job.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     })
 
@@ -84,7 +86,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -93,6 +95,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const company = await prisma.company.findUnique({
       where: { userId: session.user.id },
     })
@@ -103,7 +106,7 @@ export async function DELETE(
 
     // Verify job belongs to company
     const job = await prisma.job.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!job || job.companyId !== company.id) {
@@ -111,7 +114,7 @@ export async function DELETE(
     }
 
     await prisma.job.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ message: "Job deleted successfully" })

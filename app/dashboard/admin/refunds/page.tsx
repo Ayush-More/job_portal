@@ -132,7 +132,7 @@ export default async function RefundsPage() {
                     <div className="mt-3">
                       <form action={`/api/admin/refunds/${refund.id}`} method="POST">
                         <input type="hidden" name="status" value="PROCESSED" />
-                        <Button type="submit" size="sm" variant="success">
+                        <Button type="submit" size="sm" variant="default">
                           Mark as Processed
                         </Button>
                       </form>
