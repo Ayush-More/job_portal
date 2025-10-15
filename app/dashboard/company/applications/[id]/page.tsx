@@ -346,23 +346,6 @@ export default async function ApplicationDetailPage({ params }: ApplicationDetai
             </Card>
           )}
 
-          {/* Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button className="w-full" variant="outline">
-                Schedule Interview
-              </Button>
-              <Button className="w-full" variant="outline">
-                Send Message
-              </Button>
-              <Button className="w-full" variant="outline">
-                Update Status
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

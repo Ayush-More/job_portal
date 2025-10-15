@@ -225,29 +225,84 @@ export default function CompanyProfilePage() {
 
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold mb-4">Company Logo</h3>
-              <div className="space-y-2">
-                <Label htmlFor="logo">Upload Logo</Label>
+              
+              {/* Current Logo Display */}
+              {profile?.logo ? (
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <img 
+                        src={profile.logo} 
+                        alt="Current company logo" 
+                        className="w-24 h-24 object-contain border rounded-lg bg-white p-2 shadow-sm"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 mb-1">Current Logo</h4>
+                      <p className="text-sm text-gray-600 mb-3">
+                        This is your current company logo that appears on job listings and company profile.
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          ✓ Active
+                        </span>
+                        <a 
+                          href={profile.logo} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-800 underline"
+                        >
+                          View full size
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-yellow-800 mb-1">No Logo Uploaded</h4>
+                      <p className="text-sm text-yellow-700">
+                        Add a company logo to make your job listings more attractive to candidates.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Logo Upload Section */}
+              <div className="space-y-3">
+                <Label htmlFor="logo">
+                  {profile?.logo ? "Update Logo" : "Upload Logo"}
+                </Label>
                 <Input
                   id="logo"
                   name="logo"
                   type="file"
                   accept="image/*"
                   disabled={loading}
+                  className="cursor-pointer"
                 />
-                <p className="text-sm text-gray-500">
-                  PNG, JPG, or SVG format (max 10MB)
-                </p>
+                <div className="text-sm text-gray-500 space-y-1">
+                  <p>• Supported formats: PNG, JPG, JPEG, SVG</p>
+                  <p>• Maximum file size: 10MB</p>
+                  <p>• Recommended size: 200x200 pixels or larger</p>
+                  <p>• Logo should be square or have a transparent background</p>
+                </div>
+                
                 {profile?.logo && (
-                  <div className="mt-2">
-                    <p className="text-sm text-green-600 mb-2">
-                      ✅ Current logo:
-                    </p>
-                    <img 
-                      src={profile.logo} 
-                      alt="Company logo" 
-                      className="w-20 h-20 object-contain border rounded"
-                    />
-                  </div>
+                  <p className="text-sm text-gray-600 bg-blue-50 p-3 rounded border border-blue-200">
+                    <strong>Note:</strong> Uploading a new logo will replace your current one. 
+                    The new logo will be visible immediately after saving your profile.
+                  </p>
                 )}
               </div>
             </div>
