@@ -71,6 +71,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 250ms ease, color 250ms ease;
+  /* Ensure extremely long, unbroken strings wrap instead of overflowing */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Containers */
