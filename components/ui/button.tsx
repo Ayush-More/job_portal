@@ -12,14 +12,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center rounded-[var(--radius-sm)] text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ring-offset)] disabled:pointer-events-none disabled:opacity-50",
           {
-            "bg-blue-600 text-white hover:bg-blue-700": variant === "default",
+            "bg-[var(--brand-600)] text-white hover:bg-[var(--brand-700)]": variant === "default",
             "bg-red-600 text-white hover:bg-red-700": variant === "destructive",
-            "border border-gray-300 bg-white hover:bg-gray-50": variant === "outline",
-            "bg-gray-100 text-gray-900 hover:bg-gray-200": variant === "secondary",
-            "hover:bg-gray-100": variant === "ghost",
-            "text-blue-600 underline-offset-4 hover:underline": variant === "link",
+            "border border-[var(--color-border)] bg-[var(--surface)] hover:bg-[color:rgba(15,23,42,0.03)]": variant === "outline",
+            "bg-[color:rgba(15,23,42,0.04)] text-[var(--heading)] hover:bg-[color:rgba(15,23,42,0.08)]": variant === "secondary",
+            "hover:bg-[color:rgba(15,23,42,0.06)]": variant === "ghost",
+            "text-[var(--brand-600)] underline-offset-4 hover:underline": variant === "link",
           },
           {
             "h-10 px-4 py-2": size === "default",
