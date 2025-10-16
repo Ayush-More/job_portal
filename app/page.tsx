@@ -1,171 +1,285 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Shield, DollarSign, Users, Briefcase, TrendingUp } from "lucide-react"
+import { CheckCircle, Shield, DollarSign, Users, Briefcase, TrendingUp, ArrowRight, Zap, Heart } from "lucide-react"
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-50 to-white py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-              Find Your Dream Job with
-              <span className="text-blue-600"> Placement Guarantee</span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-              The revolutionary job portal where serious candidates meet quality employers.
-              Apply with confidence, backed by our unique placement guarantee system.
-            </p>
-            <div className="mt-10 flex justify-center gap-4">
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-200)] rounded-full blur-3xl opacity-20 animate-float"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-200)] rounded-full blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 right-10 w-72 h-72 bg-gradient-to-br from-[var(--secondary-500)] to-[var(--secondary-200)] rounded-full blur-3xl opacity-15" style={{ animation: 'float 5s ease-in-out infinite', animationDelay: '1s' }}></div>
+        </div>
+
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center space-y-8 animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--brand-100)] to-[var(--accent-100)] border border-[var(--brand-300)]">
+              <Zap className="h-4 w-4 text-[var(--brand-600)]" />
+              <span className="text-sm font-semibold text-[var(--brand-700)]">Revolutionizing Job Search 🚀</span>
+            </div>
+
+            <div className="space-y-6">
+              <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tight">
+                Find Your
+                <br />
+                <span className="bg-gradient-vibrant text-transparent bg-clip-text">Dream Job</span>
+                <br />
+                with Confidence
+              </h1>
+              
+              <p className="mx-auto max-w-3xl text-lg md:text-xl text-[var(--muted)] leading-relaxed">
+                Experience the revolutionary job portal where serious candidates meet quality employers. Apply with our unique placement guarantee system and get hired with certainty.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
               <Link href="/register">
-                <Button size="lg">Get Started Free</Button>
-              </Link>
-              <Link href="/jobs">
-                <Button size="lg" variant="outline">
-                  Browse Jobs
+                <Button size="lg" className="group rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)]">
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
+              <Link href="/jobs">
+                <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-[var(--brand-300)]">
+                  Browse Jobs
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-12 max-w-2xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-brand">10K+</div>
+                <p className="text-sm text-[var(--muted)] mt-2">Active Jobs</p>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-brand">50K+</div>
+                <p className="text-sm text-[var(--muted)] mt-2">Job Seekers</p>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-brand">5K+</div>
+                <p className="text-sm text-[var(--muted)] mt-2">Companies</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="pt-32 pb-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Why Choose JobPortal Pro?</h2>
-            <p className="mt-4 text-lg text-gray-600">
-              We revolutionize job hunting with unique benefits for everyone
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[var(--brand-50)] to-[var(--accent-50)]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16 space-y-4 animate-slide-up">
+            <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)]">Why Choose JobPortal Pro?</h2>
+            <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
+              We revolutionize job hunting with unique benefits designed for your success
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <Shield className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Placement Guarantee</CardTitle>
-                <CardDescription>
-                  Get hired or get refunded. Our unique guarantee system protects your investment.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <Users className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Quality Candidates</CardTitle>
-                <CardDescription>
-                  Companies receive applications only from serious, motivated candidates.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <DollarSign className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Fair Pricing</CardTitle>
-                <CardDescription>
-                  Transparent application fees ensure both parties are invested in success.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CheckCircle className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Verified Companies</CardTitle>
-                <CardDescription>
-                  All companies are verified to ensure legitimacy and quality job postings.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <Briefcase className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Wide Range of Jobs</CardTitle>
-                <CardDescription>
-                  From startups to enterprises, find opportunities across all industries.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <TrendingUp className="h-12 w-12 text-blue-600" />
-                <CardTitle className="mt-4">Track Progress</CardTitle>
-                <CardDescription>
-                  Monitor your applications and communicate directly with employers.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: Shield,
+                title: "Placement Guarantee",
+                description: "Get hired or get refunded. Our unique guarantee system protects your investment.",
+                color: "from-[var(--brand-600)] to-[var(--brand-500)]",
+                delay: "stagger-1"
+              },
+              {
+                icon: Users,
+                title: "Quality Candidates",
+                description: "Companies receive applications only from serious, motivated candidates.",
+                color: "from-[var(--accent-600)] to-[var(--accent-500)]",
+                delay: "stagger-2"
+              },
+              {
+                icon: DollarSign,
+                title: "Fair Pricing",
+                description: "Transparent application fees ensure both parties are invested in success.",
+                color: "from-[var(--secondary-600)] to-[var(--secondary-500)]",
+                delay: "stagger-3"
+              },
+              {
+                icon: CheckCircle,
+                title: "Verified Companies",
+                description: "All companies are verified to ensure legitimacy and quality job postings.",
+                color: "from-[var(--brand-600)] to-[var(--brand-500)]",
+                delay: "stagger-4"
+              },
+              {
+                icon: Briefcase,
+                title: "Wide Range of Jobs",
+                description: "From startups to enterprises, find opportunities across all industries.",
+                color: "from-[var(--accent-600)] to-[var(--accent-500)]",
+                delay: "stagger-5"
+              },
+              {
+                icon: TrendingUp,
+                title: "Track Progress",
+                description: "Monitor your applications and communicate directly with employers.",
+                color: "from-[var(--secondary-600)] to-[var(--secondary-500)]",
+                delay: "stagger-6"
+              },
+            ].map((feature, index) => {
+              const Icon = feature.icon
+              return (
+                <Card key={index} className={`animate-slide-up ${feature.delay} group hover:shadow-2xl hover:shadow-[rgba(168,85,247,0.3)] transition-all duration-300 overflow-hidden`}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                  <CardHeader className="relative">
+                    <div className={`inline-flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br ${feature.color} p-3 mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                    <CardTitle className="text-[var(--heading)]">{feature.title}</CardTitle>
+                    <CardDescription className="text-[var(--muted)]">{feature.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Simple, transparent, and effective
+      <section className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16 space-y-4 animate-slide-up">
+            <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)]">How It Works</h2>
+            <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
+              Simple, transparent, and effective process to land your dream job
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white">
-                1
+          <div className="grid gap-12 md:grid-cols-3 relative">
+            {/* Connection lines - hidden on mobile */}
+            <div className="hidden md:block absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-[var(--brand-200)] via-[var(--accent-200)] to-[var(--secondary-200)]" style={{ width: 'calc(100% - 60px)', left: '30px' }}></div>
+
+            {[
+              {
+                number: 1,
+                title: "Create Profile",
+                description: "Sign up as a job seeker or company and complete your profile with all necessary details",
+                icon: "👤"
+              },
+              {
+                number: 2,
+                title: "Apply or Post",
+                description: "Job seekers apply to positions, companies post listings with our placement guarantees",
+                icon: "📋"
+              },
+              {
+                number: 3,
+                title: "Get Hired",
+                description: "Connect, interview, and get hired with our placement guarantee protection in place",
+                icon: "🎉"
+              },
+            ].map((step) => (
+              <div key={step.number} className={`text-center relative animate-slide-up stagger-${step.number}`}>
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-500)] to-[var(--secondary-500)] text-4xl font-bold text-white mb-6 relative z-10 shadow-lg shadow-[rgba(168,85,247,0.3)] group hover:scale-110 transition-transform duration-300">
+                  {step.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-[var(--heading)] mb-3">{step.title}</h3>
+                <p className="text-[var(--muted)] text-lg leading-relaxed">{step.description}</p>
               </div>
-              <h3 className="mt-6 text-xl font-semibold">Create Profile</h3>
-              <p className="mt-2 text-gray-600">
-                Sign up as a job seeker or company and complete your profile
-              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--brand-50)] via-[var(--accent-50)] to-[var(--secondary-50)]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8 animate-slide-in-left">
+              <div>
+                <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)] mb-4">
+                  Why Job Seekers Love Us
+                </h2>
+                <p className="text-lg text-[var(--muted)]">
+                  We've built a platform that genuinely cares about your career growth
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  "Guaranteed placement or money back",
+                  "Access to verified job opportunities",
+                  "Direct communication with employers",
+                  "Career support and guidance",
+                  "Competitive pricing with value",
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start gap-4 group">
+                    <div className="flex-shrink-0">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--brand-600)] to-[var(--secondary-600)] text-white font-bold group-hover:scale-110 transition-transform duration-300">
+                        ✓
+                      </div>
+                    </div>
+                    <p className="text-lg text-[var(--heading)] font-semibold group-hover:text-[var(--brand-600)] transition-colors duration-200">{benefit}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white">
-                2
+            <div className="animate-slide-in-right">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-500)]/20 to-[var(--secondary-500)]/20 rounded-2xl blur-3xl"></div>
+                <Card className="relative border-2 border-[var(--brand-300)] bg-gradient-to-br from-white to-[var(--brand-50)] p-8 shadow-2xl shadow-[rgba(168,85,247,0.2)]">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">💼</div>
+                    <h3 className="text-2xl font-bold text-[var(--heading)] mb-2">10,000+</h3>
+                    <p className="text-[var(--muted)] text-lg">Successful Placements</p>
+                    <div className="mt-6 inline-block">
+                      <Heart className="h-6 w-6 text-[var(--secondary-500)] animate-pulse" />
+                    </div>
+                  </div>
+                </Card>
               </div>
-              <h3 className="mt-6 text-xl font-semibold">Apply or Post</h3>
-              <p className="mt-2 text-gray-600">
-                Job seekers apply to positions, companies post job listings with guarantees
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white">
-                3
-              </div>
-              <h3 className="mt-6 text-xl font-semibold">Get Hired</h3>
-              <p className="mt-2 text-gray-600">
-                Connect, interview, and get hired with our placement guarantee protection
-              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 py-16">
-        <div className="container mx-auto px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white">
-            Ready to Transform Your Career?
-          </h2>
-          <p className="mt-4 text-lg text-blue-100">
-            Join thousands of job seekers and companies already using JobPortal Pro
-          </p>
-          <div className="mt-8">
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-600)] via-[var(--secondary-500)] to-[var(--brand-600)]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(0,0,0,0.1)]"></div>
+          <div className="absolute top-0 right-0 -z-10 blur-3xl">
+            <div className="h-96 w-96 bg-[var(--accent-500)] opacity-20 rounded-full"></div>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-4xl text-center space-y-8">
+          <div className="space-y-4 animate-slide-up">
+            <h2 className="text-4xl md:text-5xl font-black text-white">
+              Ready to Transform Your Career?
+            </h2>
+            <p className="text-xl text-white/90 leading-relaxed">
+              Join thousands of job seekers and companies already using JobPortal Pro. Start your journey to success today.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             <Link href="/register">
-              <Button size="lg" variant="secondary">
+              <Button size="lg" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold bg-white text-[var(--brand-600)] hover:bg-[var(--brand-50)] hover:shadow-xl hover:shadow-[rgba(0,0,0,0.2)]">
                 Start Your Journey Today
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/jobs">
+              <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-white text-white hover:bg-white/10">
+                Explore Opportunities
               </Button>
             </Link>
           </div>
+
+          <p className="text-white/75 text-sm">
+            No credit card required • Free to join • Cancel anytime
+          </p>
         </div>
       </section>
     </div>

@@ -12,19 +12,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center rounded-[var(--radius-sm)] text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ring-offset)] disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center rounded-[var(--radius-md)] text-sm font-semibold shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ring-offset)] disabled:pointer-events-none disabled:opacity-50 transition-all duration-200 hover-scale",
           {
-            "bg-[var(--brand-600)] text-white hover:bg-[var(--brand-700)]": variant === "default",
-            "bg-red-600 text-white hover:bg-red-700": variant === "destructive",
-            "border border-[var(--color-border)] bg-[var(--surface)] hover:bg-[color:rgba(15,23,42,0.03)]": variant === "outline",
-            "bg-[color:rgba(15,23,42,0.04)] text-[var(--heading)] hover:bg-[color:rgba(15,23,42,0.08)]": variant === "secondary",
-            "hover:bg-[color:rgba(15,23,42,0.06)]": variant === "ghost",
-            "text-[var(--brand-600)] underline-offset-4 hover:underline": variant === "link",
+            "bg-gradient-to-r from-[var(--brand-600)] to-[var(--brand-500)] text-white hover:from-[var(--brand-700)] hover:to-[var(--brand-600)] hover:shadow-lg hover:shadow-[rgba(168,85,247,0.4)] active:scale-95": variant === "default",
+            "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/40 active:scale-95": variant === "destructive",
+            "border-2 border-[var(--brand-300)] bg-[var(--surface)] text-[var(--brand-600)] hover:bg-[var(--brand-50)] hover:border-[var(--brand-400)] hover:shadow-md hover:shadow-[rgba(168,85,247,0.2)]": variant === "outline",
+            "bg-gradient-to-r from-[var(--accent-100)] to-[var(--brand-50)] text-[var(--brand-700)] hover:from-[var(--accent-50)] hover:to-[var(--brand-100)] hover:shadow-md hover:text-[var(--brand-800)]": variant === "secondary",
+            "text-[var(--brand-600)] hover:bg-[var(--brand-50)] hover:text-[var(--brand-700)] hover:shadow-sm": variant === "ghost",
+            "text-[var(--brand-600)] underline-offset-4 hover:underline hover:text-[var(--brand-700)]": variant === "link",
           },
           {
-            "h-10 px-4 py-2": size === "default",
+            "h-10 px-5 py-2": size === "default",
             "h-9 rounded-md px-3": size === "sm",
-            "h-11 rounded-md px-8": size === "lg",
+            "h-12 rounded-lg px-8": size === "lg",
             "h-10 w-10": size === "icon",
           },
           className
