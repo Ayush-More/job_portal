@@ -44,14 +44,14 @@ export default function JobsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--brand-50)] to-white">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] py-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] py-8 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex items-center gap-3 mb-4">
-            <Zap className="h-6 w-6 text-white" />
-            <span className="text-sm font-semibold text-white/90">Browse Opportunities</span>
+          <div className="flex items-center gap-2 mb-2">
+            <Zap className="h-4 w-4 text-white" />
+            <span className="text-xs font-semibold text-white/90">Browse Opportunities</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-3">Browse Jobs</h1>
-          <p className="text-lg text-white/90">Find your next great opportunity with placement guarantee protection</p>
+          <h1 className="text-2xl md:text-3xl font-black text-white mb-2">Browse Jobs</h1>
+          <p className="text-sm text-white/90">Find your next great opportunity with placement guarantee protection</p>
         </div>
       </div>
 
