@@ -302,7 +302,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/jobs">
-              <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-white text-white hover:bg-white/10">
+              <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-white text-[var(--brand-600)] ">
                 Explore Opportunities
               </Button>
             </Link>
