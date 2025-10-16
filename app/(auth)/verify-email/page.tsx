@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CheckCircle, XCircle, Mail, AlertCircle } from "lucide-react"
 
-export default function VerifyEmailPage() {
+function VerifyEmailClient() {
   const [status, setStatus] = useState<"loading" | "success" | "error" | "resend">("loading")
   const [message, setMessage] = useState("")
   const [email, setEmail] = useState("")
@@ -185,5 +185,17 @@ export default function VerifyEmailPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center py-24">
+        <div className="text-sm text-[var(--color-muted)]">Loading…</div>
+      </div>
+    }>
+      <VerifyEmailClient />
+    </Suspense>
   )
 }

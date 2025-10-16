@@ -42,7 +42,20 @@ export async function POST(req: Request) {
       include: {
         application: {
           include: {
-            job: true,
+            job: {
+              include: {
+                company: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
+            jobSeeker: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
       },
