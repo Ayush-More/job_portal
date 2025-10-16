@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Shield, DollarSign, Users, Briefcase, TrendingUp, ArrowRight, Zap, Heart } from "lucide-react"
+import { CheckCircle, Shield, DollarSign, Users, Briefcase, TrendingUp, ArrowRight, Zap, Heart, Star, Sparkles, Rocket } from "lucide-react"
 
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-6">
-              <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tight">
+              <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tight text-[var(--heading)]">
                 Find Your
                 <br />
                 <span className="bg-gradient-vibrant text-transparent bg-clip-text">Dream Job</span>
@@ -38,13 +38,13 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
               <Link href="/register">
-                <Button size="lg" className="group rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)]">
+                <Button size="lg" className="group rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] text-white">
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link href="/jobs">
-                <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-[var(--brand-300)]">
+                <Button size="lg" variant="outline" className="rounded-[var(--radius-lg)] px-8 py-6 text-base font-semibold border-2 border-[var(--brand-300)] text-[var(--brand-600)]">
                   Browse Jobs
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -54,15 +54,15 @@ export default function Home() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-12 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-3xl font-bold bg-gradient-brand">10K+</div>
+                <div className="text-3xl font-bold text-[var(--brand-600)]">10K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Active Jobs</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold bg-gradient-brand">50K+</div>
+                <div className="text-3xl font-bold text-[var(--secondary-600)]">50K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Job Seekers</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold bg-gradient-brand">5K+</div>
+                <div className="text-3xl font-bold text-[var(--accent-600)]">5K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Companies</p>
               </div>
             </div>
@@ -189,53 +189,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--brand-50)] via-[var(--accent-50)] to-[var(--secondary-50)]">
+      {/* Benefits Section - Completely Redesigned */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--brand-50)] via-white to-[var(--secondary-50)]">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-slide-in-left">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)] mb-4">
-                  Why Job Seekers Love Us
-                </h2>
-                <p className="text-lg text-[var(--muted)]">
-                  We've built a platform that genuinely cares about your career growth
-                </p>
-              </div>
+          <div className="text-center mb-20 animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--brand-100)] to-[var(--secondary-100)] border border-[var(--brand-300)] mb-6">
+              <Heart className="h-4 w-4 text-[var(--secondary-500)]" />
+              <span className="text-sm font-semibold text-[var(--brand-700)]">Why Job Seekers Love Us</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)]">
+              Built for Your Success
+            </h2>
+            <p className="text-lg text-[var(--muted)] max-w-3xl mx-auto mt-4">
+              We've created a platform that genuinely cares about your career growth and professional development
+            </p>
+          </div>
 
-              <div className="space-y-4">
-                {[
-                  "Guaranteed placement or money back",
-                  "Access to verified job opportunities",
-                  "Direct communication with employers",
-                  "Career support and guidance",
-                  "Competitive pricing with value",
-                ].map((benefit, index) => (
-                  <div key={index} className="flex items-start gap-4 group">
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+            {/* Left Side - Features List */}
+            <div className="space-y-6 animate-slide-in-left">
+              {[
+                { icon: Shield, title: "Money-Back Guarantee", description: "Get hired within 90 days or we refund your fees" },
+                { icon: Sparkles, title: "Verified Opportunities", description: "Every job listing is verified for authenticity" },
+                { icon: Users, title: "Direct Communication", description: "Talk directly with hiring managers" },
+                { icon: Rocket, title: "Career Support", description: "Expert guidance throughout your job search" },
+                { icon: Star, title: "Transparent Pricing", description: "No hidden fees - exactly what you see" },
+              ].map((item, idx) => {
+                const Icon = item.icon
+                return (
+                  <div key={idx} className="animate-slide-up stagger-1 flex gap-4 group">
                     <div className="flex-shrink-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--brand-600)] to-[var(--secondary-600)] text-white font-bold group-hover:scale-110 transition-transform duration-300">
-                        ✓
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--brand-600)] to-[var(--secondary-600)] text-white group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="h-6 w-6" />
                       </div>
                     </div>
-                    <p className="text-lg text-[var(--heading)] font-semibold group-hover:text-[var(--brand-600)] transition-colors duration-200">{benefit}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="animate-slide-in-right">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-500)]/20 to-[var(--secondary-500)]/20 rounded-2xl blur-3xl"></div>
-                <Card className="relative border-2 border-[var(--brand-300)] bg-gradient-to-br from-white to-[var(--brand-50)] p-8 shadow-2xl shadow-[rgba(168,85,247,0.2)]">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">💼</div>
-                    <h3 className="text-2xl font-bold text-[var(--heading)] mb-2">10,000+</h3>
-                    <p className="text-[var(--muted)] text-lg">Successful Placements</p>
-                    <div className="mt-6 inline-block">
-                      <Heart className="h-6 w-6 text-[var(--secondary-500)] animate-pulse" />
+                    <div>
+                      <h3 className="text-lg font-bold text-[var(--heading)] group-hover:text-[var(--brand-600)] transition-colors duration-200">
+                        {item.title}
+                      </h3>
+                      <p className="text-[var(--muted)] text-sm">{item.description}</p>
                     </div>
                   </div>
-                </Card>
+                )
+              })}
+            </div>
+
+            {/* Right Side - Statistics Cards */}
+            <div className="space-y-6 animate-slide-in-right">
+              {/* Main Success Card */}
+              <div className="relative overflow-hidden rounded-[var(--radius-lg)] bg-gradient-to-br from-[var(--brand-600)] via-[var(--secondary-500)] to-[var(--brand-600)] p-8 text-white shadow-2xl shadow-[rgba(168,85,247,0.3)]">
+                <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl"></div>
+                <div className="relative z-10">
+                  <div className="text-6xl font-black mb-3">10K+</div>
+                  <h3 className="text-2xl font-bold mb-2">Successful Placements</h3>
+                  <p className="text-white/90">Real people getting hired at amazing companies every day</p>
+                </div>
+              </div>
+
+              {/* Two Column Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-[var(--radius-lg)] bg-gradient-to-br from-[var(--accent-100)] to-white p-6 border-2 border-[var(--accent-300)] text-center hover:shadow-lg hover:shadow-[rgba(6,182,212,0.2)] transition-all duration-300">
+                  <div className="text-4xl font-black text-[var(--accent-600)] mb-2">95%</div>
+                  <p className="text-sm font-semibold text-[var(--heading)]">Satisfaction Rate</p>
+                </div>
+                <div className="rounded-[var(--radius-lg)] bg-gradient-to-br from-[var(--secondary-100)] to-white p-6 border-2 border-[var(--secondary-300)] text-center hover:shadow-lg hover:shadow-[rgba(236,72,153,0.2)] transition-all duration-300">
+                  <div className="text-4xl font-black text-[var(--secondary-600)] mb-2">24h</div>
+                  <p className="text-sm font-semibold text-[var(--heading)]">Average Response</p>
+                </div>
+              </div>
+
+              {/* CTA Card */}
+              <div className="rounded-[var(--radius-lg)] border-2 border-[var(--brand-300)] bg-white p-6 text-center">
+                <p className="text-[var(--muted)] text-sm mb-4">Ready to transform your career?</p>
+                <Link href="/register" className="inline-block w-full">
+                  <Button className="w-full bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] text-white rounded-[var(--radius-md)]">
+                    Get Started Free
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
