@@ -26,10 +26,10 @@ export default function Home() {
               <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tight text-[var(--heading)]">
                 Find Your
                 <br />
-                <span className="bg-gradient-vibrant text-transparent bg-clip-text">Dream Job</span>
+                <span className="bg-gradient-vibrant">Dream Job</span>
                 <br />
                 with Confidence
-              </h1>
+            </h1>
               
               <p className="mx-auto max-w-3xl text-lg md:text-xl text-[var(--muted)] leading-relaxed">
                 Experience the revolutionary job portal where serious candidates meet quality employers. Apply with our unique placement guarantee system and get hired with certainty.
@@ -135,8 +135,8 @@ export default function Home() {
                     </div>
                     <CardTitle className="text-[var(--heading)]">{feature.title}</CardTitle>
                     <CardDescription className="text-[var(--muted)]">{feature.description}</CardDescription>
-                  </CardHeader>
-                </Card>
+              </CardHeader>
+            </Card>
               )
             })}
           </div>
@@ -256,7 +256,7 @@ export default function Home() {
                   <div className="text-4xl font-black text-[var(--secondary-600)] mb-2">24h</div>
                   <p className="text-sm font-semibold text-[var(--heading)]">Average Response</p>
                 </div>
-              </div>
+            </div>
 
               {/* CTA Card */}
               <div className="rounded-[var(--radius-lg)] border-2 border-[var(--brand-300)] bg-white p-6 text-center">
@@ -287,11 +287,11 @@ export default function Home() {
         <div className="container mx-auto max-w-4xl text-center space-y-8">
           <div className="space-y-4 animate-slide-up">
             <h2 className="text-4xl md:text-5xl font-black text-white">
-              Ready to Transform Your Career?
-            </h2>
+            Ready to Transform Your Career?
+          </h2>
             <p className="text-xl text-white/90 leading-relaxed">
               Join thousands of job seekers and companies already using JobPortal Pro. Start your journey to success today.
-            </p>
+          </p>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">

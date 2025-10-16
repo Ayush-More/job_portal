@@ -329,6 +329,9 @@ a, button, input, textarea, select {
 
 .bg-gradient-vibrant {
   background: linear-gradient(135deg, var(--brand-500) 0%, var(--accent-500) 50%, var(--secondary-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Blur background effect */
