@@ -189,7 +189,7 @@ model Application {
 
 model Payment {
   id              String        @id @default(cuid())
-  applicationId   String        @unique
+  applicationId   String?       @unique // Can be null during payment process
   amount          Int           // Amount in cents
   currency        String        @default("INR")
   status          PaymentStatus @default(PENDING)
@@ -203,7 +203,7 @@ model Payment {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  application     Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  application     Application?  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   refund          Refund?
 
   @@map("payments")
@@ -254,4 +254,20 @@ model Message {
   application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@map("messages")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ApplicationFeeConfig {
+  id              String   @id @default(cuid())
+  amountInCents   Int      @default(1000) // Default 10 USD in cents
+  updatedAt       DateTime @updatedAt
+  updatedBy       String?  // Admin user ID who last updated
 }

@@ -7,11 +7,25 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Loader } from "@/components/ui/loader"
 
 export default function NewJobPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  
+  const PREDEFINED_CATEGORIES = [
+    "Technology",
+    "Marketing",
+    "Sales",
+    "Finance",
+    "Human Resources",
+    "Operations",
+    "Customer Support",
+    "Design",
+    "Product",
+    "Other",
+  ]
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -27,7 +41,6 @@ export default function NewJobPage() {
       location: formData.get("location") as string,
       salaryMin: parseInt(formData.get("salaryMin") as string) || undefined,
       salaryMax: parseInt(formData.get("salaryMax") as string) || undefined,
-      applicationFee: parseInt(formData.get("applicationFee") as string) * 100, // Convert to cents
       guaranteeTerms: formData.get("guaranteeTerms") as string,
       guaranteePeriod: parseInt(formData.get("guaranteePeriod") as string),
       postedFor: formData.get("postedFor") as string || undefined,
@@ -55,13 +68,15 @@ export default function NewJobPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Post a New Job</h1>
-        <p className="text-gray-600">Create a job listing with placement guarantee</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      {loading && <Loader fullScreen />}
+      <div className="w-full max-w-3xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl text-[var(--brand-600)] font-bold">Post a New Job</h1>
+          <p className="text-gray-600">Create a job listing with placement guarantee</p>
+        </div>
 
-      <Card className="max-w-3xl">
+        <Card>
         <CardHeader>
           <CardTitle>Job Details</CardTitle>
           <CardDescription>
@@ -89,13 +104,20 @@ export default function NewJobPage() {
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Input
+              <select
                 id="category"
                 name="category"
-                placeholder="e.g. Technology, Marketing, Sales"
                 required
                 disabled={loading}
-              />
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                defaultValue=""
+              >
+                <option value="" disabled>Select a category</option>
+                {PREDEFINED_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+              <p className="text-sm text-gray-500">Categories are predefined by admins.</p>
             </div>
 
             <div className="space-y-2">
@@ -159,25 +181,10 @@ export default function NewJobPage() {
             </div>
 
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4">Application & Guarantee Settings</h3>
+              <h3 className="text-lg font-semibold mb-4">Guarantee Settings</h3>
+              <p className="text-sm text-gray-500 mb-4">Application Fee: Set by admin for all job postings</p>
               
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="applicationFee">Application Fee (USD) *</Label>
-                  <Input
-                    id="applicationFee"
-                    name="applicationFee"
-                    type="number"
-                    placeholder="10"
-                    min="1"
-                    required
-                    disabled={loading}
-                  />
-                  <p className="text-sm text-gray-500">
-                    Minimum $1.00 - This fee demonstrates candidate commitment
-                  </p>
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="guaranteePeriod">Guarantee Period (Days) *</Label>
                   <Input
@@ -239,7 +246,8 @@ export default function NewJobPage() {
             </div>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

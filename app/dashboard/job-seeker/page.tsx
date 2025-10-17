@@ -56,7 +56,7 @@ export default async function JobSeekerDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Welcome back, {jobSeeker.user.name}!</h1>
+        <h1 className="text-3xl text-[var(--brand-600)] font-bold">Welcome back, {jobSeeker.user.name}!</h1>
         <p className="text-gray-600">Manage your applications and profile</p>
       </div>
 

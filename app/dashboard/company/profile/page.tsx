@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Loader } from "@/components/ui/loader"
 
 export default function CompanyProfilePage() {
   const { data: session } = useSession()
@@ -15,6 +16,15 @@ export default function CompanyProfilePage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [profile, setProfile] = useState<any>(null)
+  const [notice, setNotice] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const COMPANY_SIZES = [
+    "1-10",
+    "11-50",
+    "51-200",
+    "201-500",
+    "501-1000",
+    "1001+",
+  ]
 
   useEffect(() => {
     if (session?.user.role !== "COMPANY") {
@@ -48,6 +58,7 @@ export default function CompanyProfilePage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
+    setNotice(null)
 
     try {
       const formData = new FormData(e.currentTarget)
@@ -67,27 +78,32 @@ export default function CompanyProfilePage() {
 
       // Handle logo upload if a file is selected
       if (logoFile && logoFile.size > 0) {
-        const uploadFormData = new FormData()
-        uploadFormData.append("file", logoFile)
-        uploadFormData.append("type", "logo")
+        try {
+          const uploadFormData = new FormData()
+          uploadFormData.append("file", logoFile)
+          uploadFormData.append("type", "logo")
 
-        const uploadResponse = await fetch("/api/upload", {
-          method: "POST",
-          body: uploadFormData,
-        })
+          const uploadResponse = await fetch("/api/upload", {
+            method: "POST",
+            body: uploadFormData,
+          })
 
-        if (uploadResponse.ok) {
-          const uploadData = await uploadResponse.json()
-          logoUrl = uploadData.url
-        } else {
-          alert("Failed to upload logo. Profile saved without logo.")
+          if (uploadResponse.ok) {
+            const uploadData = await uploadResponse.json()
+            logoUrl = uploadData.url
+          } else {
+            const err = await uploadResponse.json().catch(() => ({}))
+            setNotice({ type: 'error', message: err.error || 'Failed to upload logo. Profile saved without logo.' })
+          }
+        } catch (err) {
+          setNotice({ type: 'error', message: 'Network error while uploading logo. Profile saved without logo.' })
         }
       }
 
       // Update profile with logo URL
       const finalData = {
         ...profileData,
-        logo: logoUrl,
+        logo: typeof logoUrl === 'string' ? logoUrl : "",
       }
 
       const response = await fetch("/api/profile/company", {
@@ -97,15 +113,15 @@ export default function CompanyProfilePage() {
       })
 
       if (response.ok) {
-        alert("Profile updated successfully!")
+        setNotice({ type: 'success', message: 'Profile updated successfully!' })
         router.push("/dashboard/company")
       } else {
         const error = await response.json()
-        alert(error.error || "Failed to update profile")
+        setNotice({ type: 'error', message: error.error || 'Failed to update profile' })
       }
     } catch (error) {
       console.error("Profile update error:", error)
-      alert("Something went wrong")
+      setNotice({ type: 'error', message: 'Something went wrong' })
     } finally {
       setLoading(false)
     }
@@ -115,7 +131,7 @@ export default function CompanyProfilePage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Company Profile</h1>
+          <h1 className="text-3xl text-[var(--brand-600)] font-bold">Company Profile</h1>
           <p className="text-gray-600">Loading your profile...</p>
         </div>
         <Card className="max-w-3xl animate-pulse">
@@ -139,13 +155,15 @@ export default function CompanyProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Company Profile</h1>
-        <p className="text-gray-600">Update your company information</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      {loading && <Loader fullScreen />}
+      <div className="w-full max-w-3xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl text-[var(--brand-600)] font-bold">Company Profile</h1>
+          <p className="text-gray-600">Update your company information</p>
+        </div>
 
-      <Card className="max-w-3xl">
+        <Card>
         <CardHeader>
           <CardTitle>Company Information</CardTitle>
           <CardDescription>
@@ -154,6 +172,11 @@ export default function CompanyProfilePage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {notice && (
+              <div className={`rounded-md border px-3 py-2 text-sm ${notice.type === 'success' ? 'border-green-200 bg-green-50 text-green-800' : 'border-red-200 bg-red-50 text-red-800'}`}>
+                {notice.message}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="companyName">Company Name *</Label>
               <Input
@@ -190,13 +213,19 @@ export default function CompanyProfilePage() {
 
             <div className="space-y-2">
               <Label htmlFor="size">Company Size</Label>
-              <Input
+              <select
                 id="size"
                 name="size"
-                placeholder="e.g. 1-10, 11-50, 51-200, 201-500, 500+"
+                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-400 focus:outline-none"
                 defaultValue={profile?.size || ""}
                 disabled={loading}
-              />
+                required
+              >
+                <option value="" disabled>Select company size</option>
+                {COMPANY_SIZES.map((size) => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
             </div>
 
             <div className="space-y-2">
@@ -322,7 +351,8 @@ export default function CompanyProfilePage() {
             </div>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

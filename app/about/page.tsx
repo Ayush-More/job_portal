@@ -6,7 +6,7 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">About JobPortal Pro</h1>
+          <h1 className="text-4xl text-[var(--brand-600)] font-bold mb-4">About JobPortal Pro</h1>
           <p className="text-xl text-gray-600">
             Revolutionizing recruitment with placement guarantees
           </p>

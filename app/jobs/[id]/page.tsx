@@ -12,6 +12,8 @@ import { MapPin, DollarSign, Briefcase, Clock, Shield, Building } from "lucide-r
 import { formatCurrency, formatDate } from "@/lib/utils"
 import Script from "next/script"
 import Link from "next/link"
+import { useToast } from "@/components/ui/toast"
+import { Loader } from "@/components/ui/loader"
 
 // Razorpay script will be injected via <Script>
 
@@ -19,15 +21,53 @@ export default function JobDetailPage() {
   const params = useParams()
   const router = useRouter()
   const { data: session } = useSession()
+  const { addToast } = useToast()
   const [job, setJob] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [applying, setApplying] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [showApplyForm, setShowApplyForm] = useState(false)
+  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default 10 USD
+  const [hasApplied, setHasApplied] = useState<boolean>(false)
 
   useEffect(() => {
     fetchJob()
-  }, [params.id])
+    fetchApplicationFee()
+    if (session?.user?.role === "JOB_SEEKER") {
+      checkApplicationStatus()
+    }
+  }, [params.id, session?.user?.id])
+
+  async function fetchApplicationFee() {
+    try {
+      const response = await fetch("/api/application-fee")
+      if (response.ok) {
+        const data = await response.json()
+        console.log("Fetched application fee:", data.amountInCents)
+        setApplicationFee(data.amountInCents)
+      } else {
+        console.error("Failed to fetch application fee:", response.status)
+      }
+    } catch (error) {
+      console.error("Error fetching application fee:", error)
+    }
+  }
+
+  async function checkApplicationStatus() {
+    if (!session?.user?.id || !params.id) return
+    
+    try {
+      const response = await fetch("/api/applications")
+      if (response.ok) {
+        const data = await response.json()
+        // Check if user has applied to this specific job
+        const hasAppliedToThisJob = data.some((app: any) => app.job.id === params.id)
+        setHasApplied(hasAppliedToThisJob)
+      }
+    } catch (error) {
+      console.error("Error checking application status:", error)
+    }
+  }
 
   async function fetchJob() {
     try {
@@ -50,8 +90,8 @@ export default function JobDetailPage() {
     setApplying(true)
 
     try {
-      // Create application
-      const appResponse = await fetch("/api/applications", {
+      // Create Razorpay order first (without creating application)
+      const paymentResponse = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -60,25 +100,8 @@ export default function JobDetailPage() {
         }),
       })
 
-      if (!appResponse.ok) {
-        const error = await appResponse.json()
-        alert(error.error || "Failed to submit application")
-        return
-      }
-
-      const application = await appResponse.json()
-
-      // Create Razorpay order
-      const paymentResponse = await fetch("/api/payments/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          applicationId: application.id,
-        }),
-      })
-
       if (!paymentResponse.ok) {
-        alert("Failed to initialize payment")
+        addToast("Failed to initialize payment", "error")
         return
       }
 
@@ -86,7 +109,7 @@ export default function JobDetailPage() {
 
       // @ts-ignore
       if (typeof window === "undefined" || !window.Razorpay) {
-        alert("Payment system not available")
+        addToast("Payment system not available", "error")
         return
       }
 
@@ -99,13 +122,20 @@ export default function JobDetailPage() {
         description: orderData.description,
         order_id: orderData.orderId,
         prefill: orderData.prefill,
+        method: {
+          netbanking: true,
+          wallet: true,
+          upi: true,
+          card: true,
+          emi: true,
+        },
         handler: async function (response: any) {
           try {
             const verifyRes = await fetch("/api/payments/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                applicationId: orderData.applicationId,
+                orderId: orderData.orderId,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
@@ -117,10 +147,12 @@ export default function JobDetailPage() {
               throw new Error(err.error || "Payment verification failed")
             }
 
-            alert("Application submitted and payment completed!")
+            addToast("Application submitted and payment completed!", "success")
+            setHasApplied(true)
+            setShowApplyForm(false)
             router.push("/dashboard/job-seeker")
           } catch (e) {
-            alert((e as Error).message)
+            addToast((e as Error).message, "error")
           }
         },
         theme: { color: "#2563eb" },
@@ -131,7 +163,7 @@ export default function JobDetailPage() {
       rzp.open()
     } catch (error) {
       console.error("Application error:", error)
-      alert("Something went wrong")
+      addToast("Something went wrong", "error")
     } finally {
       setApplying(false)
     }
@@ -173,202 +205,224 @@ export default function JobDetailPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Razorpay script */}
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
-      <div className="mb-4">
-        <Link href="/jobs">
-          <Button variant="ghost">← Back to Jobs</Button>
-        </Link>
-      </div>
+    <>
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="lazyOnload"
+      />
+      {applying && <Loader fullScreen />}
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-4">
+          <Link href="/jobs">
+            <Button variant="ghost">← Back to Jobs</Button>
+          </Link>
+        </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-3xl">{job.title}</CardTitle>
-                  <CardDescription className="text-lg mt-2">
-                    {job.company.companyName}
-                  </CardDescription>
-                </div>
-                {job.company.verified && (
-                  <Badge variant="success">Verified</Badge>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 mb-6">
-                <div className="flex items-center text-gray-600">
-                  <MapPin className="mr-2 h-5 w-5" />
-                  <span>{job.location}</span>
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <Briefcase className="mr-2 h-5 w-5" />
-                  <span>{job.category}</span>
-                </div>
-                {job.salaryMin && job.salaryMax && (
-                  <div className="flex items-center text-gray-600">
-                    <DollarSign className="mr-2 h-5 w-5" />
-                    <span>
-                      ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center text-gray-600">
-                  <Clock className="mr-2 h-5 w-5" />
-                  <span>Posted {formatDate(job.createdAt)}</span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-                  <p className="text-gray-700 whitespace-pre-line">{job.description}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-                  <p className="text-gray-700 whitespace-pre-line">{job.requirements}</p>
-                </div>
-
-                {job.company.description && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">About the Company</h3>
-                    <p className="text-gray-700">{job.company.description}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {showApplyForm && session?.user.role === "JOB_SEEKER" && (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Submit Your Application</CardTitle>
-                <CardDescription>
-                  Add a cover letter to introduce yourself
-                </CardDescription>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-3xl">{job.title}</CardTitle>
+                    <CardDescription className="text-lg mt-2">
+                      {job.company.companyName}
+                    </CardDescription>
+                  </div>
+                  {job.company.verified && (
+                    <Badge variant="success">Verified</Badge>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
+                <div className="grid gap-4 md:grid-cols-2 mb-6">
+                  <div className="flex items-center text-gray-600">
+                    <MapPin className="mr-2 h-5 w-5" />
+                    <span>{job.location}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Briefcase className="mr-2 h-5 w-5" />
+                    <span>{job.category}</span>
+                  </div>
+                  {job.salaryMin && job.salaryMax && (
+                    <div className="flex items-center text-gray-600">
+                      <DollarSign className="mr-2 h-5 w-5" />
+                      <span>
+                        ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center text-gray-600">
+                    <Clock className="mr-2 h-5 w-5" />
+                    <span>Posted {formatDate(job.createdAt)}</span>
+                  </div>
+                </div>
+
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="coverLetter">Cover Letter (Optional)</Label>
-                    <Textarea
-                      id="coverLetter"
-                      placeholder="Tell the employer why you're a great fit..."
-                      rows={6}
-                      value={coverLetter}
-                      onChange={(e) => setCoverLetter(e.target.value)}
-                    />
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Job Description</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{job.description}</p>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleApply}
-                      disabled={applying}
-                      className="flex-1"
-                    >
-                      {applying ? "Submitting..." : `Pay ${formatCurrency(job.applicationFee)} & Apply`}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowApplyForm(false)}
-                      disabled={applying}
-                    >
-                      Cancel
-                    </Button>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Requirements</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{job.requirements}</p>
                   </div>
+
+                  {job.company.description && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">About the Company</h3>
+                      <p className="text-gray-700">{job.company.description}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
-          )}
-        </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Application Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <div className="text-sm text-gray-600">Application Fee</div>
-                <div className="text-2xl font-bold text-blue-600">
-                  {formatCurrency(job.applicationFee)}
-                </div>
+            {showApplyForm && session?.user.role === "JOB_SEEKER" && (
+              <div 
+                className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                onClick={() => setShowApplyForm(false)}
+              >
+                <Card 
+                  className="w-full max-w-md max-h-[90vh] overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <CardHeader>
+                    <CardTitle>Submit Your Application</CardTitle>
+                    <CardDescription>
+                      Add a cover letter to introduce yourself
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="coverLetter">Cover Letter (Optional)</Label>
+                        <Textarea
+                          id="coverLetter"
+                          placeholder="Tell the employer why you're a great fit..."
+                          rows={6}
+                          value={coverLetter}
+                          onChange={(e) => setCoverLetter(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleApply}
+                          disabled={applying}
+                          className="flex-1"
+                        >
+                          {applying ? "Submitting..." : `Pay $${(applicationFee / 100).toFixed(2)} & Apply`}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowApplyForm(false)}
+                          disabled={applying}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
+            )}
+          </div>
 
-              <div className="pt-4 border-t">
-                <div className="flex items-start">
-                  <Shield className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-sm">Placement Guarantee</div>
-                    <div className="text-xs text-gray-600 mt-1">
-                      {job.guaranteePeriod} days guarantee period
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Application Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm text-gray-600">Application Fee</div>
+                   <div className="text-2xl font-bold text-blue-600">
+                     ${(applicationFee / 100).toFixed(2)}
+                   </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-start">
+                    <Shield className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
+                    <div>
+                      <div className="font-semibold text-sm">Placement Guarantee</div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {job.guaranteePeriod} days guarantee period
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {!session ? (
-                <Link href="/login">
-                  <Button className="w-full">Sign In to Apply</Button>
-                </Link>
-              ) : session.user.role === "JOB_SEEKER" ? (
-                !showApplyForm && (
-                  <Button
-                    className="w-full"
-                    onClick={() => setShowApplyForm(true)}
-                  >
-                    Apply Now
-                  </Button>
-                )
-              ) : (
-                <p className="text-sm text-gray-500 text-center">
-                  Only job seekers can apply
-                </p>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Guarantee Terms</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-700 whitespace-pre-line">
-                {job.guaranteeTerms}
-              </p>
-            </CardContent>
-          </Card>
-
-          {job.company.website && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Company Info</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {job.company.location && (
-                  <div className="flex items-center text-sm">
-                    <Building className="mr-2 h-4 w-4 text-gray-600" />
-                    <span>{job.company.location}</span>
-                  </div>
+                {!session ? (
+                  <Link href="/login">
+                    <Button className="w-full">Sign In to Apply</Button>
+                  </Link>
+                ) : session.user.role === "JOB_SEEKER" ? (
+                  hasApplied ? (
+                    <div className="text-center">
+                      <div className="inline-flex items-center px-4 py-2 rounded-md bg-green-100 text-green-800 text-sm font-medium">
+                        ✓ Application Submitted
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        You have already applied to this job
+                      </p>
+                    </div>
+                  ) : !showApplyForm ? (
+                    <Button
+                      className="w-full"
+                      onClick={() => setShowApplyForm(true)}
+                    >
+                      Apply Now
+                    </Button>
+                  ) : null
+                ) : (
+                  <p className="text-sm text-gray-500 text-center">
+                    Only job seekers can apply
+                  </p>
                 )}
-                <a
-                  href={job.company.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:underline block"
-                >
-                  Visit Website →
-                </a>
               </CardContent>
             </Card>
-          )}
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Guarantee Terms</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-700 whitespace-pre-line">
+                  {job.guaranteeTerms}
+                </p>
+              </CardContent>
+            </Card>
+
+            {job.company.website && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Company Info</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {job.company.location && (
+                    <div className="flex items-center text-sm">
+                      <Building className="mr-2 h-4 w-4 text-gray-600" />
+                      <span>{job.company.location}</span>
+                    </div>
+                  )}
+                  <a
+                    href={job.company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 hover:underline block"
+                  >
+                    Visit Website →
+                  </a>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

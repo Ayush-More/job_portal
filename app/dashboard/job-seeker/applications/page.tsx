@@ -66,7 +66,7 @@ export default async function JobSeekerApplicationsPage() {
             </Button>
           </Link>
         </div>
-        <h1 className="text-3xl font-bold">My Applications</h1>
+        <h1 className="text-3xl text-[var(--brand-600)] font-bold">My Applications</h1>
         <p className="text-gray-600">Track and manage all your job applications</p>
       </div>
 

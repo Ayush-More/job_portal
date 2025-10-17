@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { useToast } from "@/components/ui/toast"
 
 type Props = {
   applicationId: string
@@ -12,6 +13,7 @@ export default function ApplicationActions({ applicationId, initialStatus, onUpd
   const [status, setStatus] = useState<Props["initialStatus"]>(initialStatus)
   const [isPending, startTransition] = useTransition()
   const [loading, setLoading] = useState<string>("")
+  const { addToast } = useToast()
 
   async function updateStatus(nextStatus: Props["initialStatus"]) {
     try {
@@ -27,13 +29,14 @@ export default function ApplicationActions({ applicationId, initialStatus, onUpd
       }
       setStatus(nextStatus)
       onUpdated?.(nextStatus)
+      addToast(`Application ${nextStatus.toLowerCase().replace('_', ' ')} successfully!`, "success")
       startTransition(() => {
         // refresh server components
         // @ts-ignore - available in Next app router
         if (typeof window !== "undefined") window.location.reload()
       })
     } catch (e) {
-      alert((e as Error).message)
+      addToast((e as Error).message, "error")
     } finally {
       setLoading("")
     }

@@ -52,7 +52,7 @@ export default async function CompanyDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Welcome back, {company.companyName}!</h1>
+        <h1 className="text-3xl text-[var(--brand-600)] font-bold">Welcome back, {company.companyName}!</h1>
         <p className="text-gray-600">Manage your job postings and applications</p>
       </div>
 
@@ -84,23 +84,6 @@ export default async function CompanyDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalApplications}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              $
-              {company.jobs
-                .reduce((sum, job) => {
-                  return sum + job.applications.filter(a => a.payment?.status === "COMPLETED").length * (job.applicationFee / 100)
-                }, 0)
-                .toFixed(2)}
-            </div>
           </CardContent>
         </Card>
       </div>

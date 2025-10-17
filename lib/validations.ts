@@ -44,7 +44,6 @@ export const jobSchema = z.object({
   location: z.string().min(2, "Location is required"),
   salaryMin: z.number().min(0).optional(),
   salaryMax: z.number().min(0).optional(),
-  applicationFee: z.number().min(100, "Minimum fee is $1.00"),
   guaranteeTerms: z.string().min(20, "Guarantee terms are required"),
   guaranteePeriod: z.number().min(1, "Guarantee period must be at least 1 day"),
   postedFor: z.string().optional(),

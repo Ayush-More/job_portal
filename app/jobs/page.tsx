@@ -16,10 +16,24 @@ export default function JobsPage() {
   const [search, setSearch] = useState("")
   const [location, setLocation] = useState("")
   const [category, setCategory] = useState("")
+  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default 10 USD
 
   useEffect(() => {
     fetchJobs()
+    fetchApplicationFee()
   }, [search, location, category])
+
+  async function fetchApplicationFee() {
+    try {
+      const response = await fetch("/api/application-fee")
+      if (response.ok) {
+        const data = await response.json()
+        setApplicationFee(data.amountInCents)
+      }
+    } catch (error) {
+      console.error("Error fetching application fee:", error)
+    }
+  }
 
   async function fetchJobs() {
     setLoading(true)
@@ -168,7 +182,7 @@ export default function JobsPage() {
                     </div>
                     <div className="mt-4 flex flex-wrap items-center gap-2">
                       <Badge className="bg-gradient-to-r from-[var(--brand-100)] to-[var(--accent-100)] text-[var(--brand-700)] border border-[var(--brand-300)]">
-                        Fee: {formatCurrency(job.applicationFee)}
+                        Fee: {formatCurrency(applicationFee)}
                       </Badge>
                       <Badge className="bg-gradient-to-r from-[var(--secondary-100)] to-[var(--brand-100)] text-[var(--secondary-700)] border border-[var(--secondary-300)]">
                         Guaranteed

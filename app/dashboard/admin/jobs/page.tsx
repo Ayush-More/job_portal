@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { formatDateTime, formatCurrency } from "@/lib/utils"
 import { Briefcase, MapPin, DollarSign, Calendar } from "lucide-react"
+import ApplicationFeeManager from "@/components/admin/ApplicationFeeManager"
 
 async function getJobs() {
   const { prisma } = await import("@/lib/prisma")
@@ -51,11 +52,17 @@ export default async function JobsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Job Management</h1>
-        <p className="text-gray-600">Manage all job postings</p>
+        <h1 className="text-3xl text-[var(--brand-600)] font-bold">Job Management</h1>
+        <p className="text-gray-600">Manage all job postings and application fees</p>
       </div>
 
-      <Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <ApplicationFeeManager />
+        </div>
+        
+        <div className="lg:col-span-2">
+          <Card>
         <CardHeader>
           <CardTitle>All Jobs</CardTitle>
           <CardDescription>
@@ -89,7 +96,7 @@ export default async function JobsPage() {
                       </div>
                       <div className="flex items-center space-x-1">
                         <DollarSign className="h-4 w-4" />
-                        <span>Fee: {formatCurrency(job.applicationFee)}</span>
+                        <span>Fee: Set by Admin</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
@@ -124,7 +131,9 @@ export default async function JobsPage() {
             ))}
           </div>
         </CardContent>
-      </Card>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

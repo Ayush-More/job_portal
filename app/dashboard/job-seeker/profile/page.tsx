@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/toast"
+import { Loader } from "@/components/ui/loader"
 
 export default function JobSeekerProfilePage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { addToast } = useToast()
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [profile, setProfile] = useState<any>(null)
@@ -82,7 +85,7 @@ export default function JobSeekerProfilePage() {
           const uploadData = await uploadResponse.json()
           resumeUrl = uploadData.url
         } else {
-          alert("Failed to upload resume. Profile saved without resume.")
+          addToast("Failed to upload resume. Profile saved without resume.", "error")
         }
       }
 
@@ -99,15 +102,15 @@ export default function JobSeekerProfilePage() {
       })
 
       if (response.ok) {
-        alert("Profile updated successfully!")
+        addToast("Profile updated successfully!", "success")
         router.push("/dashboard/job-seeker")
       } else {
         const error = await response.json()
-        alert(error.error || "Failed to update profile")
+        addToast(error.error || "Failed to update profile", "error")
       }
     } catch (error) {
       console.error("Profile update error:", error)
-      alert("Something went wrong")
+      addToast("Something went wrong", "error")
     } finally {
       setLoading(false)
     }
@@ -115,12 +118,12 @@ export default function JobSeekerProfilePage() {
 
   if (fetching) {
     return (
-      <div className="container mx-auto px-4 py-8 align-middle">
+      <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">My Profile</h1>
+          <h1 className="text-3xl font-bold">Job Seeker Profile</h1>
           <p className="text-gray-600">Loading your profile...</p>
         </div>
-        <Card className="max-w-3xl align-middle animate-pulse">
+        <Card className="max-w-3xl animate-pulse">
           <CardHeader>
             <div className="h-6 bg-gray-200 rounded w-1/3 mb-2" />
             <div className="h-4 bg-gray-200 rounded w-1/2" />
@@ -141,13 +144,15 @@ export default function JobSeekerProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 align-middle">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">My Profile</h1>
-        <p className="text-gray-600">Update your professional information</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      {loading && <Loader fullScreen />}
+      <div className="w-full max-w-3xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl text-[var(--brand-600)] font-bold">My Profile</h1>
+          <p className="text-gray-600">Update your professional information</p>
+        </div>
 
-      <Card className="max-w-3xl align-middle">
+        <Card>
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>
@@ -267,7 +272,8 @@ export default function JobSeekerProfilePage() {
             </div>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }
