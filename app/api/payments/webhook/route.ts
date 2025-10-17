@@ -73,38 +73,42 @@ export async function POST(req: Request) {
           },
         })
 
-        // Create guarantee
-        const guaranteeExpiresAt = new Date()
-        guaranteeExpiresAt.setDate(
-          guaranteeExpiresAt.getDate() + payment.application.job.guaranteePeriod
-        )
+        // Create guarantee if application exists
+        if (payment.application) {
+          const guaranteeExpiresAt = new Date()
+          guaranteeExpiresAt.setDate(
+            guaranteeExpiresAt.getDate() + payment.application.job.guaranteePeriod
+          )
 
-        await prisma.guarantee.create({
-          data: {
-            applicationId: payment.applicationId,
-            terms: payment.application.job.guaranteeTerms,
-            expiresAt: guaranteeExpiresAt,
-          },
-        })
+          await prisma.guarantee.create({
+            data: {
+              applicationId: payment.applicationId!,
+              terms: payment.application.job.guaranteeTerms,
+              expiresAt: guaranteeExpiresAt,
+            },
+          })
+        }
 
-        // Send confirmation emails
-        await sendEmail({
-          to: payment.application.jobSeeker.user.email,
-          subject: "Payment Confirmed",
-          html: emailTemplates.paymentReceived(
-            payment.amount,
-            payment.application.job.title
-          ),
-        })
+        // Send confirmation emails if application exists
+        if (payment.application) {
+          await sendEmail({
+            to: payment.application.jobSeeker.user.email,
+            subject: "Payment Confirmed",
+            html: emailTemplates.paymentReceived(
+              payment.amount,
+              payment.application.job.title
+            ),
+          })
 
-        await sendEmail({
-          to: payment.application.job.company.user.email,
-          subject: "New Application Received",
-          html: emailTemplates.applicationReceived(
-            payment.application.job.title,
-            payment.application.jobSeeker.user.name || "A candidate"
-          ),
-        })
+          await sendEmail({
+            to: payment.application.job.company.user.email,
+            subject: "New Application Received",
+            html: emailTemplates.applicationReceived(
+              payment.application.job.title,
+              payment.application.jobSeeker.user.name || "A candidate"
+            ),
+          })
+        }
 
         break
 

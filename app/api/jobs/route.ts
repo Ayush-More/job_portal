@@ -18,7 +18,7 @@ export async function GET(req: Request) {
         ...(category && { category }),
         ...(location && { location: { contains: location, mode: "insensitive" } }),
         ...(minSalary && { salaryMin: { gte: parseInt(minSalary) } }),
-        ...(maxFee && { applicationFee: { lte: parseInt(maxFee) } }),
+        // Application fee filtering removed - now managed globally by admin
         ...(search && {
           OR: [
             { title: { contains: search, mode: "insensitive" } },

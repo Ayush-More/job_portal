@@ -86,7 +86,7 @@ export default async function CompanyJobDetailPage({ params }: { params: Promise
             </div>
             <div>
               <div className="text-sm text-gray-500">Application Fee</div>
-              <div className="font-medium">${(job.applicationFee / 100).toFixed(2)}</div>
+              <div className="font-medium">Set by Admin</div>
             </div>
             {job.salaryMin !== null && job.salaryMax !== null && (
               <div className="sm:col-span-2">

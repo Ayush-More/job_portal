@@ -70,12 +70,14 @@ export async function PATCH(
         data: { status: "REFUNDED" },
       })
 
-      // Send email notification
-      await sendEmail({
-        to: refund.payment.application.jobSeeker.user.email,
-        subject: "Refund Processed",
-        html: emailTemplates.refundProcessed(refund.amount),
-      })
+      // Send email notification if application exists
+      if (refund.payment.application) {
+        await sendEmail({
+          to: refund.payment.application.jobSeeker.user.email,
+          subject: "Refund Processed",
+          html: emailTemplates.refundProcessed(refund.amount),
+        })
+      }
     }
 
     return NextResponse.json(updatedRefund)

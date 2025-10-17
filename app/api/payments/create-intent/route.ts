@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         },
         create: {
           applicationId,
-          amount: application.job.applicationFee,
+          amount: 1000, // Default application fee in cents (10 USD)
           status: "COMPLETED", // Mark as completed for development
         },
       })
@@ -87,9 +87,19 @@ export async function POST(req: Request) {
       })
     }
 
+    // Get global application fee
+    let feeConfig = await prisma.applicationFeeConfig.findFirst()
+    if (!feeConfig) {
+      feeConfig = await prisma.applicationFeeConfig.create({
+        data: {
+          amountInCents: 1000, // Default 10 USD
+        },
+      })
+    }
+
     // Create payment intent with real Stripe
     const paymentIntent = await createPaymentIntent(
-      application.job.applicationFee,
+      feeConfig.amountInCents,
       applicationId,
       application.jobSeeker.user.email
     )
@@ -102,7 +112,7 @@ export async function POST(req: Request) {
       },
       create: {
         applicationId,
-        amount: application.job.applicationFee,
+        amount: feeConfig.amountInCents,
         stripePaymentId: paymentIntent.id,
       },
     })

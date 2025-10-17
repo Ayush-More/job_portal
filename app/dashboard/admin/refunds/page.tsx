@@ -79,11 +79,11 @@ export default async function RefundsPage() {
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <h3 className="font-semibold">
-                        {refund.payment.application.jobSeeker.user.name}
+                        {refund.payment.application?.jobSeeker.user.name || "Unknown User"}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        {refund.payment.application.job.title} at{" "}
-                        {refund.payment.application.job.company.companyName}
+                        {refund.payment.application?.job.title || "Unknown Job"} at{" "}
+                        {refund.payment.application?.job.company.companyName || "Unknown Company"}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Requested {formatDateTime(refund.requestedAt)}
