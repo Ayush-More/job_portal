@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Loader } from "@/components/ui/loader"
+import { useToast } from "@/components/ui/toast"
 
 export default function NewJobPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const { addToast } = useToast()
   
   const PREDEFINED_CATEGORIES = [
     "Technology",
@@ -30,7 +31,6 @@ export default function NewJobPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
-    setError("")
 
     const formData = new FormData(e.currentTarget)
     const data = {
@@ -55,13 +55,14 @@ export default function NewJobPage() {
 
       if (!response.ok) {
         const result = await response.json()
-        setError(result.error || "Failed to create job")
+        addToast(result.error || "Failed to create job posting", "error")
         return
       }
 
+      addToast("Job posting created successfully!", "success")
       router.push("/dashboard/company")
     } catch (error) {
-      setError("Something went wrong")
+      addToast("Something went wrong. Please try again.", "error")
     } finally {
       setLoading(false)
     }
@@ -85,11 +86,6 @@ export default function NewJobPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-                {error}
-              </div>
-            )}
 
             <div className="space-y-2">
               <Label htmlFor="title">Job Title *</Label>

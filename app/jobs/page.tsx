@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { MapPin, DollarSign, Briefcase, Search, Zap } from "lucide-react"
+import { MapPin, DollarSign, Briefcase, Search, Zap, ChevronDown } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 
 export default function JobsPage() {
@@ -17,6 +17,19 @@ export default function JobsPage() {
   const [location, setLocation] = useState("")
   const [category, setCategory] = useState("")
   const [applicationFee, setApplicationFee] = useState<number>(1000) // Default 10 USD
+
+  const PREDEFINED_CATEGORIES = [
+    "Technology",
+    "Marketing", 
+    "Sales",
+    "Finance",
+    "Human Resources",
+    "Operations",
+    "Customer Support",
+    "Design",
+    "Product",
+    "Other",
+  ]
 
   useEffect(() => {
     fetchJobs()
@@ -105,13 +118,22 @@ export default function JobsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="category" className="font-semibold text-[var(--heading)]">Category</Label>
-                <Input
-                  id="category"
-                  placeholder="e.g. Technology"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="border-2 border-[var(--brand-200)] focus:border-[var(--brand-500)]"
-                />
+                <div className="relative">
+                  <select
+                    id="category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full px-3 py-2 border-2 border-[var(--brand-200)] focus:border-[var(--brand-500)] rounded-md bg-white text-[var(--heading)] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--brand-200)]"
+                  >
+                    <option value="">All Categories</option>
+                    {PREDEFINED_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat} className="text-[var(--heading)]">
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-[var(--muted)] pointer-events-none" />
+                </div>
               </div>
             </div>
           </CardContent>
