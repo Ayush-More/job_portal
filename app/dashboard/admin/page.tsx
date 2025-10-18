@@ -61,7 +61,7 @@ async function getStats() {
     },
     revenue: {
       total: totalRevenue,
-      formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
+      formatted: `$${(totalRevenue / 100).toFixed(2)}`,
     },
   }
 }
