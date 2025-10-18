@@ -168,28 +168,7 @@ export default async function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Pending Actions</CardTitle>
-            <CardDescription>Items requiring attention</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Refund Requests</span>
-                <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
-                  {stats.refunds?.total || 0}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Unverified Companies</span>
-                <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-600">
-                  0
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        
       </div>
 
       <Card className="mt-8">
