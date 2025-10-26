@@ -19,7 +19,7 @@ export async function createPaymentIntent(
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
-    currency: 'usd',
+    currency: 'inr',
     metadata: {
       applicationId,
     },

@@ -95,9 +95,9 @@ export default function ApplicationFeeManager() {
         {loading && <Loader fullScreen />}
         <form onSubmit={handleUpdateFee} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="fee">Application Fee (USD)</Label>
+            <Label htmlFor="fee">Application Fee (INR)</Label>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">$</span>
+              <span className="text-2xl font-bold">₹</span>
               <Input
                 id="fee"
                 type="number"
@@ -110,7 +110,7 @@ export default function ApplicationFeeManager() {
               />
             </div>
             <p className="text-sm text-gray-500">
-              Minimum fee: $1.00. This amount will be charged to job seekers when they apply to any job.
+              Minimum fee: ₹1.00. This amount will be charged to job seekers when they apply to any job.
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export default function ApplicationFeeManager() {
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h4 className="font-semibold text-blue-900 mb-2">Current Fee Information</h4>
           <div className="text-sm text-blue-800 space-y-1">
-            <p><strong>Amount:</strong> ${(fee / 100).toFixed(2)} USD</p>
+            <p><strong>Amount:</strong> ₹{(fee / 100).toFixed(2)} INR</p>
             <p><strong>Applies to:</strong> All job postings</p>
             <p><strong>Revenue goes to:</strong> Admin</p>
             <p><strong>Companies:</strong> No financial involvement</p>

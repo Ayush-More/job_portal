@@ -63,7 +63,7 @@ export async function GET(req: Request) {
       },
       revenue: {
         total: totalRevenue,
-        formatted: `$${(totalRevenue / 100).toFixed(2)}`,
+        formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
       },
     }
 

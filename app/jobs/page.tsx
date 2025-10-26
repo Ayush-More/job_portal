@@ -16,7 +16,7 @@ export default function JobsPage() {
   const [search, setSearch] = useState("")
   const [location, setLocation] = useState("")
   const [category, setCategory] = useState("")
-  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default 10 USD
+  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default ₹10
 
   const PREDEFINED_CATEGORIES = [
     "Technology",
@@ -198,7 +198,7 @@ export default function JobsPage() {
                       {job.salaryMin && job.salaryMax && (
                         <div className="flex items-center text-sm text-[var(--muted)]">
                           <DollarSign className="mr-2 h-4 w-4 text-[var(--secondary-600)]" />
-                          ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}
+                          ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
                         </div>
                       )}
                     </div>

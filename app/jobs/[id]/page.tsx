@@ -27,7 +27,7 @@ export default function JobDetailPage() {
   const [applying, setApplying] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [showApplyForm, setShowApplyForm] = useState(false)
-  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default 10 USD
+  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default ₹10
   const [hasApplied, setHasApplied] = useState<boolean>(false)
 
   useEffect(() => {
@@ -248,7 +248,7 @@ export default function JobDetailPage() {
                     <div className="flex items-center text-gray-600">
                       <DollarSign className="mr-2 h-5 w-5" />
                       <span>
-                        ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}
+                        ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
                       </span>
                     </div>
                   )}
@@ -313,7 +313,7 @@ export default function JobDetailPage() {
                           disabled={applying}
                           className="flex-1"
                         >
-                          {applying ? "Submitting..." : `Pay $${(applicationFee / 100).toFixed(2)} & Apply`}
+                          {applying ? "Submitting..." : `Pay ₹${(applicationFee / 100).toFixed(2)} & Apply`}
                         </Button>
                         <Button
                           variant="outline"
@@ -339,7 +339,7 @@ export default function JobDetailPage() {
                 <div>
                   <div className="text-sm text-gray-600">Application Fee</div>
                    <div className="text-2xl font-bold text-blue-600">
-                     ${(applicationFee / 100).toFixed(2)}
+                     ₹{(applicationFee / 100).toFixed(2)}
                    </div>
                 </div>
 

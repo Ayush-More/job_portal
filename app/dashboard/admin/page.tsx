@@ -61,7 +61,7 @@ async function getStats() {
     },
     revenue: {
       total: totalRevenue,
-      formatted: `$${(totalRevenue / 100).toFixed(2)}`,
+      formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
     },
   }
 }
@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.revenue?.formatted || "$0.00"}</div>
+            <div className="text-2xl font-bold">{stats.revenue?.formatted || "₹0.00"}</div>
             <p className="text-xs text-gray-500">Total platform revenue</p>
           </CardContent>
         </Card>

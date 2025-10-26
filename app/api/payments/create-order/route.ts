@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     if (!feeConfig) {
       feeConfig = await prisma.applicationFeeConfig.create({
         data: {
-          amountInCents: 1000, // Default 10 USD
+          amountInCents: 1000, // Default ₹10
         },
       })
     }

@@ -105,13 +105,13 @@ export const emailTemplates = {
   
   paymentReceived: (amount: number, jobTitle: string) => `
     <h1>Payment Confirmed</h1>
-    <p>We have received your payment of $${(amount / 100).toFixed(2)} for the application to ${jobTitle}.</p>
+    <p>We have received your payment of ₹${(amount / 100).toFixed(2)} for the application to ${jobTitle}.</p>
     <p>Your application is now being processed.</p>
   `,
   
   refundProcessed: (amount: number) => `
     <h1>Refund Processed</h1>
-    <p>A refund of $${(amount / 100).toFixed(2)} has been processed to your account.</p>
+    <p>A refund of ₹${(amount / 100).toFixed(2)} has been processed to your account.</p>
     <p>It should appear in your account within 5-10 business days.</p>
   `,
 }

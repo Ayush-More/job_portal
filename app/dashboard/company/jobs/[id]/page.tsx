@@ -91,7 +91,7 @@ export default async function CompanyJobDetailPage({ params }: { params: Promise
             {job.salaryMin !== null && job.salaryMax !== null && (
               <div className="sm:col-span-2">
                 <div className="text-sm text-gray-500">Salary Range</div>
-                <div className="font-medium">${job.salaryMin?.toLocaleString()} - ${job.salaryMax?.toLocaleString()}</div>
+                <div className="font-medium">₹{job.salaryMin?.toLocaleString()} - ₹{job.salaryMax?.toLocaleString()}</div>
               </div>
             )}
             <div className="sm:col-span-2">

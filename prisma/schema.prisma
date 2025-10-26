@@ -266,7 +266,7 @@ model Category {
 
 model ApplicationFeeConfig {
   id              String   @id @default(cuid())
-  amountInCents   Int      @default(1000) // Default 10 USD in cents
+  amountInCents   Int      @default(1000) // Default ₹10 in cents
   updatedAt       DateTime @updatedAt
   updatedBy       String?  // Admin user ID who last updated
 }
