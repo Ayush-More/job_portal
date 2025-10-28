@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Briefcase, Users, DollarSign, Eye } from "lucide-react"
+import { Briefcase, Users, IndianRupee, Eye } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 
 export default async function CompanyDashboard() {

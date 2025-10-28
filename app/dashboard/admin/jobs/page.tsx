@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { formatDateTime, formatCurrency } from "@/lib/utils"
-import { Briefcase, MapPin, DollarSign, Calendar } from "lucide-react"
+import { Briefcase, MapPin, IndianRupee, Calendar } from "lucide-react"
 import ApplicationFeeManager from "@/components/admin/ApplicationFeeManager"
 
 async function getJobs() {
@@ -95,7 +95,7 @@ export default async function JobsPage() {
                         <span>{job.location}</span>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <DollarSign className="h-4 w-4" />
+                        <IndianRupee className="h-4 w-4" />
                         <span>Fee: Set by Admin</span>
                       </div>
                       <div className="flex items-center space-x-1">

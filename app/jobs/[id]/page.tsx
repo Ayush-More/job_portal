@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { MapPin, DollarSign, Briefcase, Clock, Shield, Building } from "lucide-react"
+import { MapPin, IndianRupee, Briefcase, Clock, Shield, Building } from "lucide-react"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import Script from "next/script"
 import Link from "next/link"
@@ -246,7 +246,7 @@ export default function JobDetailPage() {
                   </div>
                   {job.salaryMin && job.salaryMax && (
                     <div className="flex items-center text-gray-600">
-                      <DollarSign className="mr-2 h-5 w-5" />
+                      <IndianRupee className="mr-2 h-5 w-5" />
                       <span>
                         ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
                       </span>

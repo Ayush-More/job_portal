@@ -189,13 +189,10 @@ function VerifyEmailClient() {
 }
 
 export default function VerifyEmailPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center py-24">
-        <div className="text-sm text-[var(--color-muted)]">Loading…</div>
-      </div>
-    }>
-      <VerifyEmailClient />
-    </Suspense>
-  )
+  // Email verification removed; redirect users to login
+  const router = useRouter()
+  useEffect(() => {
+    router.replace("/login")
+  }, [router])
+  return null
 }

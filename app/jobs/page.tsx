@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { MapPin, DollarSign, Briefcase, Search, Zap, ChevronDown } from "lucide-react"
+import { MapPin, IndianRupee, Briefcase, Search, Zap, ChevronDown } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 
 export default function JobsPage() {
@@ -197,7 +197,7 @@ export default function JobsPage() {
                       </div>
                       {job.salaryMin && job.salaryMax && (
                         <div className="flex items-center text-sm text-[var(--muted)]">
-                          <DollarSign className="mr-2 h-4 w-4 text-[var(--secondary-600)]" />
+                          <IndianRupee className="mr-2 h-4 w-4 text-[var(--secondary-600)]" />
                           ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
                         </div>
                       )}

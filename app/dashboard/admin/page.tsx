@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, DollarSign, FileText, AlertCircle } from "lucide-react"
+import { Users, Briefcase, IndianRupee, FileText, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -123,7 +123,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-600" />
+            <IndianRupee className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.revenue?.formatted || "₹0.00"}</div>
@@ -160,7 +160,7 @@ export default async function AdminDashboard() {
               </Link>
               <Link href="/dashboard/admin/analytics">
                 <Button className="w-full" variant="outline">
-                  <DollarSign className="mr-2 h-4 w-4" />
+                  <IndianRupee className="mr-2 h-4 w-4" />
                   View Analytics
                 </Button>
               </Link>

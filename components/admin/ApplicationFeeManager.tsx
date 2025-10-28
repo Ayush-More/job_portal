@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader } from "@/components/ui/loader"
 import { useToast } from "@/components/ui/toast"
-import { DollarSign } from "lucide-react"
+import { IndianRupee } from "lucide-react"
 
 export default function ApplicationFeeManager() {
   const [fee, setFee] = useState<number>(0)
@@ -64,7 +64,7 @@ export default function ApplicationFeeManager() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
+            <IndianRupee className="h-5 w-5" />
             Application Fee Management
           </CardTitle>
           <CardDescription>
@@ -84,7 +84,7 @@ export default function ApplicationFeeManager() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5" />
+          <IndianRupee className="h-5 w-5" />
           Application Fee Management
         </CardTitle>
         <CardDescription>

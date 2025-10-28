@@ -32,12 +32,7 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        // Check if it's an email verification error
-        if (result.error.includes("verify your email")) {
-          setError(result.error)
-        } else {
-          setError("Invalid email or password")
-        }
+        setError("Invalid email or password")
       } else {
         router.push("/dashboard")
         router.refresh()
@@ -64,16 +59,6 @@ export default function LoginPage() {
             {error && (
               <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
                 {error}
-                {error.includes("verify your email") && (
-                  <div className="mt-2">
-                    <Link 
-                      href="/verify-email" 
-                      className="text-blue-600 hover:underline font-medium"
-                    >
-                      Go to Email Verification →
-                    </Link>
-                  </div>
-                )}
               </div>
             )}
             

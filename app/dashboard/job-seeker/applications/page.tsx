@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowLeft, FileText, Calendar, DollarSign, Building2 } from "lucide-react"
+import { ArrowLeft, FileText, Calendar, IndianRupee, Building2 } from "lucide-react"
 import { formatCurrency, formatDate } from "@/lib/utils"
 
 export default async function JobSeekerApplicationsPage() {
@@ -85,7 +85,7 @@ export default async function JobSeekerApplicationsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-600" />
+            <IndianRupee className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalSpent)}</div>
@@ -151,7 +151,7 @@ export default async function JobSeekerApplicationsPage() {
                             </span>
                             {application.payment && (
                               <span className="flex items-center gap-1">
-                                <DollarSign className="h-4 w-4" />
+                                <IndianRupee className="h-4 w-4" />
                                 {formatCurrency(application.payment.amount)}
                               </span>
                             )}

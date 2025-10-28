@@ -88,16 +88,7 @@ export default async function UsersPage() {
                   <Badge className={getRoleColor(user.role)}>
                     {user.role}
                   </Badge>
-                  {user.emailVerified && (
-                    <Badge variant="outline" className="text-green-600">
-                      Verified
-                    </Badge>
-                  )}
-                  {!user.emailVerified && (
-                    <Badge variant="outline" className="text-yellow-600">
-                      Unverified
-                    </Badge>
-                  )}
+                  {/* Email verification badges removed */}
                 </div>
                 <div className="text-right text-sm text-gray-500">
                   <div>Joined: {formatDateTime(user.createdAt)}</div>

@@ -16,7 +16,7 @@ import {
   Briefcase,
   GraduationCap,
   Clock,
-  DollarSign
+  IndianRupee
 } from "lucide-react"
 import { formatDate, formatCurrency } from "@/lib/utils"
 
@@ -266,7 +266,7 @@ export default async function ApplicationDetailPage({ params }: ApplicationDetai
                 <p className="text-sm text-gray-600">{application.job.location}</p>
               </div>
               <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-gray-500" />
+                <IndianRupee className="h-4 w-4 text-gray-500" />
                 <span className="text-sm">
                   Application Fee: Set by Admin
                 </span>

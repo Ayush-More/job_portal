@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { registerSchema } from "@/lib/validations"
 import { sendEmail, emailTemplates } from "@/lib/email"
-import { sendVerificationEmail } from "@/lib/email-verification"
 
 export async function POST(req: Request) {
   try {
@@ -25,14 +24,14 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    // Create user and profile (email not verified initially)
+    // Create user and profile (auto-verified)
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
         password: hashedPassword,
         name: validatedData.name,
         role: validatedData.role,
-        emailVerified: null, // Email not verified initially
+        emailVerified: new Date(),
         ...(validatedData.role === "COMPANY"
           ? {
               company: {
@@ -49,14 +48,19 @@ export async function POST(req: Request) {
       },
     })
 
-    // Send verification email instead of welcome email
-    await sendVerificationEmail(user.email, user.name || "there")
+    // Optionally send a welcome email (if email is configured)
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Ittihad Placement",
+        html: `<p>Hi ${user.name || "there"},</p><p>Your account has been created successfully.</p>`,
+      })
+    } catch (_) {}
 
     return NextResponse.json(
       { 
-        message: "User created successfully. Please check your email to verify your account.", 
-        userId: user.id,
-        emailSent: true
+        message: "User created successfully.",
+        userId: user.id
       },
       { status: 201 }
     )
