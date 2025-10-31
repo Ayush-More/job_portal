@@ -70,11 +70,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 })
     }
 
+    // Explicitly include positions in the data object
+    const jobData: any = {
+      companyId: company.id,
+      title: validatedData.title,
+      description: validatedData.description,
+      requirements: validatedData.requirements,
+      category: validatedData.category,
+      location: validatedData.location,
+      guaranteeTerms: validatedData.guaranteeTerms,
+      guaranteePeriod: validatedData.guaranteePeriod,
+      ...(validatedData.salaryMin !== undefined && { salaryMin: validatedData.salaryMin }),
+      ...(validatedData.salaryMax !== undefined && { salaryMax: validatedData.salaryMax }),
+      ...(validatedData.positions !== undefined && { positions: validatedData.positions }),
+      ...(validatedData.postedFor && { postedFor: validatedData.postedFor }),
+    }
+
     const job = await prisma.job.create({
-      data: {
-        companyId: company.id,
-        ...validatedData,
-      },
+      data: jobData,
     })
 
     return NextResponse.json(job, { status: 201 })

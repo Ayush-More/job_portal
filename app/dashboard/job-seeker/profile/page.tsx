@@ -34,7 +34,7 @@ export default function JobSeekerProfilePage() {
       if (!session?.user) return
       
       try {
-        const response = await fetch("/api/profile/job-seeker")
+        const response = await fetch("/api/profile/job-seeker", { cache: "no-store" })
         if (response.ok) {
           const profileData = await response.json()
           setProfile(profileData)

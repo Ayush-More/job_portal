@@ -17,7 +17,18 @@ export default async function JobSeekerDashboard() {
 
   const jobSeeker = await prisma.jobSeeker.findUnique({
     where: { userId: session.user.id },
-    include: {
+    select: {
+      id: true,
+      userId: true,
+      phone: true,
+      location: true,
+      resume: true,
+      skills: true,
+      experience: true,
+      education: true,
+      bio: true,
+      currentlyEmployed: true,
+      gender: true,
       user: true,
       applications: {
         include: {

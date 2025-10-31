@@ -155,6 +155,7 @@ model Job {
   location            String
   salaryMin           Int?
   salaryMax           Int?
+  positions           Int?      // Number of positions available
   guaranteeTerms      String    // Guarantee conditions
   guaranteePeriod     Int       // Days until guarantee expires
   status              JobStatus @default(ACTIVE)

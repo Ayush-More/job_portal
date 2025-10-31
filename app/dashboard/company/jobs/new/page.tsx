@@ -42,13 +42,15 @@ export default function NewJobPage() {
     setLoading(true)
 
     const formData = new FormData(e.currentTarget)
+    const positionsValue = formData.get("positions") as string
+    
     const data = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,
       requirements: formData.get("requirements") as string,
       category: formData.get("category") as string,
       location: formData.get("location") as string,
-      positions: parseInt(formData.get("positions") as string) || undefined,
+      positions: positionsValue ? parseInt(positionsValue) : undefined,
       salaryMin: parseInt(formData.get("salaryMin") as string) || undefined,
       salaryMax: parseInt(formData.get("salaryMax") as string) || undefined,
       guaranteeTerms: formData.get("guaranteeTerms") as string,

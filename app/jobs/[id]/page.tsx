@@ -252,6 +252,12 @@ export default function JobDetailPage() {
                       </span>
                     </div>
                   )}
+                  {job.positions && (
+                    <div className="flex items-center text-gray-600">
+                      <Building className="mr-2 h-5 w-5" />
+                      <span>{job.positions} Position{job.positions > 1 ? 's' : ''} Available</span>
+                    </div>
+                  )}
                   <div className="flex items-center text-gray-600">
                     <Clock className="mr-2 h-5 w-5" />
                     <span>Posted {formatDate(job.createdAt)}</span>

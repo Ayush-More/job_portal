@@ -13,7 +13,18 @@ export async function GET() {
 
     const jobSeeker = await prisma.jobSeeker.findUnique({
       where: { userId: session.user.id },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        phone: true,
+        location: true,
+        skills: true,
+        experience: true,
+        education: true,
+        bio: true,
+        resume: true,
+        currentlyEmployed: true,
+        gender: true,
         user: {
           select: {
             name: true,
@@ -47,20 +58,72 @@ export async function PATCH(req: Request) {
     const body = await req.json()
     const validatedData = jobSeekerProfileSchema.parse(body)
 
+    // Include all fields including the new ones
+    const {
+      phone,
+      location,
+      skills,
+      experience,
+      education,
+      bio,
+      resume,
+      currentlyEmployed,
+      gender,
+    } = validatedData as any
+
+    const safeData: any = {
+      ...(phone !== undefined ? { phone } : {}),
+      ...(location !== undefined ? { location } : {}),
+      ...(skills !== undefined ? { skills } : {}),
+      ...(experience !== undefined ? { experience } : {}),
+      ...(education !== undefined ? { education } : {}),
+      ...(bio !== undefined ? { bio } : {}),
+      ...(resume !== undefined ? { resume } : {}),
+      ...(currentlyEmployed !== undefined ? { currentlyEmployed } : {}),
+      ...(gender !== undefined ? { gender } : {}),
+    }
+
     // Check if profile exists, if not create it
     const existingProfile = await prisma.jobSeeker.findUnique({
       where: { userId: session.user.id },
+      select: { id: true },
     })
 
     const jobSeeker = existingProfile
       ? await prisma.jobSeeker.update({
           where: { userId: session.user.id },
-          data: validatedData,
+          data: safeData,
+          select: {
+            id: true,
+            userId: true,
+            phone: true,
+            location: true,
+            skills: true,
+            experience: true,
+            education: true,
+            bio: true,
+            resume: true,
+            currentlyEmployed: true,
+            gender: true,
+          },
         })
       : await prisma.jobSeeker.create({
           data: {
             userId: session.user.id,
-            ...validatedData,
+            ...safeData,
+          },
+          select: {
+            id: true,
+            userId: true,
+            phone: true,
+            location: true,
+            skills: true,
+            experience: true,
+            education: true,
+            bio: true,
+            resume: true,
+            currentlyEmployed: true,
+            gender: true,
           },
         })
 
