@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -12,7 +12,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = params?.id
+    const { id } = await context.params
     if (!id) {
       return NextResponse.json({ error: "Missing id" }, { status: 400 })
     }
@@ -61,7 +61,7 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -69,7 +69,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const id = params?.id
+    const { id } = await context.params
     if (!id) {
       return NextResponse.json({ error: "Missing id" }, { status: 400 })
     }
