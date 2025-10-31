@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -15,18 +15,27 @@ export default function NewJobPage() {
   const [loading, setLoading] = useState(false)
   const { addToast } = useToast()
   
-  const PREDEFINED_CATEGORIES = [
-    "Technology",
-    "Marketing",
-    "Sales",
-    "Finance",
-    "Human Resources",
-    "Operations",
-    "Customer Support",
-    "Design",
-    "Product",
-    "Other",
-  ]
+  const LOCATIONS = ["Dubai", "Sharjha", "Abu Dhabi", "Rasalkhema", "Ajman"]
+
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories", { cache: "no-store" })
+        const data = await res.json()
+        if (res.ok) {
+          setCategories((data?.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        }
+      } catch (e) {
+        // ignore, leave categories empty
+      } finally {
+        setLoadingCategories(false)
+      }
+    }
+    loadCategories()
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -39,6 +48,7 @@ export default function NewJobPage() {
       requirements: formData.get("requirements") as string,
       category: formData.get("category") as string,
       location: formData.get("location") as string,
+      positions: parseInt(formData.get("positions") as string) || undefined,
       salaryMin: parseInt(formData.get("salaryMin") as string) || undefined,
       salaryMax: parseInt(formData.get("salaryMax") as string) || undefined,
       guaranteeTerms: formData.get("guaranteeTerms") as string,
@@ -104,30 +114,37 @@ export default function NewJobPage() {
                 id="category"
                 name="category"
                 required
-                disabled={loading}
+                disabled={loading || loadingCategories}
                 className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
                 defaultValue=""
               >
                 <option value="" disabled>Select a category</option>
-                {PREDEFINED_CATEGORIES.map((category) => (
-                  <option key={category} value={category}>{category}</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
-              <p className="text-sm text-gray-500">Categories are predefined by admins.</p>
+              <p className="text-sm text-gray-500">Categories are managed by admins and loaded dynamically.</p>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="location">Location *</Label>
-              <Input
+              <select
                 id="location"
                 name="location"
-                placeholder="e.g. San Francisco, CA or Remote"
                 required
                 disabled={loading}
-              />
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                defaultValue=""
+              >
+                <option value="" disabled>Select a location</option>
+                {LOCATIONS.map((loc) => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
+              </select>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
+             
               <div className="space-y-2">
                 <Label htmlFor="salaryMin">Minimum Salary (INR)</Label>
                 <Input
@@ -147,6 +164,18 @@ export default function NewJobPage() {
                   type="number"
                   placeholder="100000"
                   min="0"
+                  disabled={loading}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="positions">Number of Positions *</Label>
+                <Input
+                  id="positions"
+                  name="positions"
+                  type="number"
+                  placeholder="1"
+                  min="1"
+                  required
                   disabled={loading}
                 />
               </div>

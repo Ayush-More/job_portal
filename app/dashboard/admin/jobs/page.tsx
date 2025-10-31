@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { formatDateTime, formatCurrency } from "@/lib/utils"
 import { Briefcase, MapPin, IndianRupee, Calendar } from "lucide-react"
 import ApplicationFeeManager from "@/components/admin/ApplicationFeeManager"
+import Link from "next/link"
 
 async function getJobs() {
   const { prisma } = await import("@/lib/prisma")
@@ -59,6 +60,11 @@ export default async function JobsPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1">
           <ApplicationFeeManager />
+          <div className="mt-4">
+            <Link href="/dashboard/admin/categories">
+              <Button variant="outline" className="w-full">Manage Categories</Button>
+            </Link>
+          </div>
         </div>
         
         <div className="lg:col-span-2">

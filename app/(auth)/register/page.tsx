@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader } from "@/components/ui/loader"
+import { signIn } from "next-auth/react"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -42,8 +43,24 @@ export default function RegisterPage() {
         return
       }
 
-      // Redirect directly to login (no email verification)
-      router.push(`/login`)
+      // Auto-login then redirect to the correct profile setup
+      const loginRes = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      })
+
+      if (loginRes?.error) {
+        // Fallback to login page if auto-login fails
+        router.push(`/login`)
+        return
+      }
+
+      if (role === "COMPANY") {
+        router.push("/dashboard/company/profile")
+      } else {
+        router.push("/dashboard/job-seeker/profile")
+      }
     } catch (error) {
       setError("Something went wrong")
     } finally {

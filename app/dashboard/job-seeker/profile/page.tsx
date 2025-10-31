@@ -19,6 +19,8 @@ export default function JobSeekerProfilePage() {
   const [fetching, setFetching] = useState(true)
   const [profile, setProfile] = useState<any>(null)
   const [skills, setSkills] = useState("")
+  const [currentlyEmployed, setCurrentlyEmployed] = useState<boolean | undefined>(undefined)
+  const [gender, setGender] = useState<string>("")
 
   useEffect(() => {
     if (session?.user.role !== "JOB_SEEKER") {
@@ -37,6 +39,8 @@ export default function JobSeekerProfilePage() {
           const profileData = await response.json()
           setProfile(profileData)
           setSkills(profileData.skills?.join(", ") || "")
+          setCurrentlyEmployed(typeof profileData.currentlyEmployed === 'boolean' ? profileData.currentlyEmployed : undefined)
+          setGender(profileData.gender || "")
         }
       } catch (error) {
         console.error("Error fetching profile:", error)
@@ -66,6 +70,8 @@ export default function JobSeekerProfilePage() {
         experience: parseInt(formData.get("experience") as string) || 0,
         education: formData.get("education") as string,
         bio: formData.get("bio") as string,
+        currentlyEmployed: typeof currentlyEmployed === 'boolean' ? currentlyEmployed : undefined,
+        gender: gender || undefined,
       }
 
       let resumeUrl = profile?.resume // Keep existing resume if no new one uploaded
@@ -182,6 +188,93 @@ export default function JobSeekerProfilePage() {
                 defaultValue={profile?.location || ""}
                 disabled={loading}
               />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Are you currently employed?</Label>
+                <div className="rounded-lg border p-3 bg-white">
+                  <div className="flex gap-3">
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        currentlyEmployed === true
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="currentlyEmployed"
+                        className="sr-only"
+                        checked={currentlyEmployed === true}
+                        onChange={() => setCurrentlyEmployed(true)}
+                        disabled={loading}
+                      />
+                      Yes, I am employed
+                    </label>
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        currentlyEmployed === false
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="currentlyEmployed"
+                        className="sr-only"
+                        checked={currentlyEmployed === false}
+                        onChange={() => setCurrentlyEmployed(false)}
+                        disabled={loading}
+                      />
+                      No, I am not employed
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Gender</Label>
+                <div className="rounded-lg border p-3 bg-white">
+                  <div className="flex gap-3">
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        gender === "Male"
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        className="sr-only"
+                        checked={gender === "Male"}
+                        onChange={(e) => setGender(e.target.value)}
+                        disabled={loading}
+                      />
+                      Male
+                    </label>
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        gender === "Female"
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                        className="sr-only"
+                        checked={gender === "Female"}
+                        onChange={(e) => setGender(e.target.value)}
+                        disabled={loading}
+                      />
+                      Female
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">

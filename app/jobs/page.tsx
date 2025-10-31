@@ -17,24 +17,28 @@ export default function JobsPage() {
   const [location, setLocation] = useState("")
   const [category, setCategory] = useState("")
   const [applicationFee, setApplicationFee] = useState<number>(1000) // Default ₹10
-
-  const PREDEFINED_CATEGORIES = [
-    "Technology",
-    "Marketing", 
-    "Sales",
-    "Finance",
-    "Human Resources",
-    "Operations",
-    "Customer Support",
-    "Design",
-    "Product",
-    "Other",
-  ]
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
 
   useEffect(() => {
     fetchJobs()
     fetchApplicationFee()
   }, [search, location, category])
+
+  useEffect(() => {
+    // Load active categories once
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories", { cache: "no-store" })
+        const data = await res.json()
+        if (res.ok) {
+          setCategories((data?.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+    loadCategories()
+  }, [])
 
   async function fetchApplicationFee() {
     try {
@@ -126,9 +130,9 @@ export default function JobsPage() {
                     className="w-full px-3 py-2 border-2 border-[var(--brand-200)] focus:border-[var(--brand-500)] rounded-md bg-white text-[var(--heading)] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--brand-200)]"
                   >
                     <option value="">All Categories</option>
-                    {PREDEFINED_CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat} className="text-[var(--heading)]">
-                        {cat}
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name} className="text-[var(--heading)]">
+                        {c.name}
                       </option>
                     ))}
                   </select>

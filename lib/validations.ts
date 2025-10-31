@@ -33,6 +33,8 @@ export const jobSeekerProfileSchema = z.object({
   education: z.string().optional(),
   bio: z.string().optional(),
   resume: z.string().url("Invalid resume URL").optional().or(z.literal("")),
+  currentlyEmployed: z.boolean().optional(),
+  gender: z.enum(["Male", "Female"]).optional(),
 })
 
 // Job Validations
