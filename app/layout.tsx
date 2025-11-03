@@ -41,7 +41,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <WhatsAppChat 
-            phoneNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919876543210"}
+            phoneNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917001617004"}
             message={process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || "Hello! I need help with Ittihad Placement."}
           />
         </Providers>
