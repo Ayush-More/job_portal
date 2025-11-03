@@ -12,51 +12,57 @@ export function Footer() {
                 <Briefcase className="h-7 w-7 text-[var(--brand-600)]" />
                 <Sparkles className="h-3 w-3 text-[var(--accent-500)] absolute -top-1 -right-1" />
               </div>
-              <span className="text-xl font-bold tracking-tight bg-gradient-brand">JobPortal Pro</span>
+              <span className="text-xl font-bold tracking-tight bg-gradient-brand">Ittihad Placement</span>
             </div>
             <p className="mt-4 text-sm text-[var(--muted)] leading-relaxed">
-              The revolutionary job portal with placement guarantees. Apply with
+              The revolutionary Ittihad placement platform with placement guarantees. Apply with
               confidence, get hired with certainty.
             </p>
           </div>
 
-          <div className="animate-slide-in-left stagger-1">
-            <h3 className="text-sm font-bold text-[var(--brand-700)] uppercase tracking-wider">For Job Seekers</h3>
-            <ul className="mt-6 space-y-3">
-              <li>
-                <Link href="/jobs" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
-                  Browse Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/register" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
-                  Create Account
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* Mobile: Horizontal layout with divider */}
+          <div className="flex md:contents gap-6 md:gap-0">
+            <div className="flex-1 animate-slide-in-left stagger-1">
+              <h3 className="text-sm font-bold text-[var(--brand-700)] uppercase tracking-wider">For Job Seekers</h3>
+              <ul className="mt-6 space-y-3">
+                <li>
+                  <Link href="/jobs" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
+                    Browse Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/register" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
+                    Create Account
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-          <div className="animate-slide-in-right stagger-2">
-            <h3 className="text-sm font-bold text-[var(--brand-700)] uppercase tracking-wider">For Companies</h3>
-            <ul className="mt-6 space-y-3">
-              <li>
-                <Link href="/register" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
-                  Post Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
-                  About Us
-                </Link>
-              </li>
-            </ul>
+            {/* Vertical divider line */}
+            <div className="md:hidden w-px bg-[var(--brand-200)] self-stretch"></div>
+
+            <div className="flex-1 animate-slide-in-right stagger-2">
+              <h3 className="text-sm font-bold text-[var(--brand-700)] uppercase tracking-wider">For Companies</h3>
+              <ul className="mt-6 space-y-3">
+                <li>
+                  <Link href="/register" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
+                    Post Jobs
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="text-sm text-[var(--muted)] hover:text-[var(--brand-600)] font-medium transition-colors duration-200">
+                    About Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
         <div className="mt-12 border-t-2 border-[var(--brand-200)] pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-center sm:text-left text-sm text-[var(--muted)] font-medium">
-              &copy; {new Date().getFullYear()} JobPortal Pro. All rights reserved.
+              &copy; 2024 Ittihad Placement. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link href="#" className="text-xs text-[var(--muted)] hover:text-[var(--brand-600)] transition-colors duration-200">

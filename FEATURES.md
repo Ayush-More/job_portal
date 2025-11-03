@@ -1,4 +1,4 @@
-# JobPortal Pro - Complete Feature List
+# Ittihad Placement - Complete Feature List
 
 ## ✅ Implemented Features
 

@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get JobPortal Pro running locally in 5 minutes!
+Get Ittihad Placement running locally in 5 minutes!
 
 ## Prerequisites
 

@@ -1,8 +1,8 @@
-# 🎨 Complete Design Overhaul - JobPortal Pro
+# 🎨 Complete Design Overhaul - Ittihad Placement
 
 ## Overview
 
-The entire JobPortal Pro platform has been completely redesigned with a modern, vibrant, and professional aesthetic. Every element has been refined to create a cohesive, visually stunning, and user-friendly experience that will impress clients and engage users.
+The entire Ittihad Placement platform has been completely redesigned with a modern, vibrant, and professional aesthetic. Every element has been refined to create a cohesive, visually stunning, and user-friendly experience that will impress clients and engage users.
 
 ---
 
@@ -331,7 +331,7 @@ animate-float
 
 ## ✨ Result
 
-The redesigned JobPortal Pro now features:
+The redesigned Ittihad Placement now features:
 - ✅ Modern, vibrant, professional aesthetic
 - ✅ Smooth, impressive animations
 - ✅ Cohesive color system throughout

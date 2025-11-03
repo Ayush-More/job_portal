@@ -30,10 +30,11 @@ export async function sendEmail({
 }) {
   // If no SMTP credentials are configured, log the email and return success (for development)
   if (!transporter) {
-    console.log('📧 Email would be sent (SMTP not configured):')
+    console.log('📧 Email would be sent (Gmail SMTP not configured):')
     console.log(`To: ${to}`)
     console.log(`Subject: ${subject}`)
     console.log(`HTML: ${html.substring(0, 100)}...`)
+    console.log('💡 To enable emails, set EMAIL_USER and EMAIL_PASS in your .env.local file')
     return { success: true, data: null }
   }
 
@@ -49,7 +50,7 @@ export async function sendEmail({
     console.log('📧 Email sent successfully:', info.messageId)
     
     return { success: true, data: info }
-  } catch (error) {
+  } catch (error: any) {
     console.error('📧 Email send error:', error)
     return { success: false, error }
   }
@@ -57,7 +58,7 @@ export async function sendEmail({
 
 export const emailTemplates = {
   welcome: (name: string) => `
-    <h1>Welcome to JobPortal Pro!</h1>
+    <h1>Welcome to Ittihad Placement!</h1>
     <p>Hi ${name},</p>
     <p>Thank you for joining our platform. We're excited to have you here!</p>
   `,
@@ -66,7 +67,7 @@ export const emailTemplates = {
     <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
       <h1 style="color: #333; text-align: center;">Verify Your Email Address</h1>
       <p>Hi ${name},</p>
-      <p>Thank you for registering with JobPortal Pro! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+      <p>Thank you for registering with Ittihad Placement! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${verificationUrl}" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email Address</a>
@@ -77,11 +78,11 @@ export const emailTemplates = {
       
       <p><strong>Important:</strong> This verification link will expire in 24 hours.</p>
       
-      <p>If you didn't create an account with JobPortal Pro, please ignore this email.</p>
+      <p>If you didn't create an account with Ittihad Placement, please ignore this email.</p>
       
       <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
       <p style="color: #666; font-size: 12px; text-align: center;">
-        This email was sent from JobPortal Pro. Please do not reply to this email.
+        This email was sent from Ittihad Placement. Please do not reply to this email.
       </p>
     </div>
   `,

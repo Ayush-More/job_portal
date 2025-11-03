@@ -1,6 +1,6 @@
-# JobPortal Pro
+# Ittihad Placement
 
-A revolutionary job portal platform with a pay-to-apply model and placement guarantees. Built with Next.js 14, TypeScript, Prisma, PostgreSQL, and Stripe.
+A revolutionary Ittihad placement platform with a pay-to-apply model and placement guarantees. Built with Next.js 14, TypeScript, Prisma, PostgreSQL, and Stripe.
 
 ## Deployment Status
 ✅ Fixed middleware size issue  
@@ -109,7 +109,7 @@ EMAIL_FROM="noreply@yourjobportal.com"
 
 # App Configuration
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_NAME="JobPortal Pro"
+NEXT_PUBLIC_APP_NAME="Ittihad Placement"
 ```
 
 4. **Set up the database**

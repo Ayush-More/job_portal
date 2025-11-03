@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader } from "@/components/ui/loader"
-import { signIn } from "next-auth/react"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [role, setRole] = useState<"JOB_SEEKER" | "COMPANY">("JOB_SEEKER")
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -43,24 +44,12 @@ export default function RegisterPage() {
         return
       }
 
-      // Auto-login then redirect to the correct profile setup
-      const loginRes = await signIn("credentials", {
-        redirect: false,
-        email: data.email,
-        password: data.password,
-      })
-
-      if (loginRes?.error) {
-        // Fallback to login page if auto-login fails
-        router.push(`/login`)
-        return
-      }
-
-      if (role === "COMPANY") {
-        router.push("/dashboard/company/profile")
-      } else {
-        router.push("/dashboard/job-seeker/profile")
-      }
+      // Redirect to verify-email for OTP verification
+      // Include OTP in URL if provided (development mode)
+      const verifyUrl = result.otp 
+        ? `/verify-email?email=${encodeURIComponent(data.email)}&otp=${result.otp}`
+        : `/verify-email?email=${encodeURIComponent(data.email)}`
+      router.push(verifyUrl)
     } catch (error) {
       setError("Something went wrong")
     } finally {
@@ -116,7 +105,7 @@ export default function RegisterPage() {
                 id="name"
                 name="name"
                 type="text"
-                placeholder={role === "COMPANY" ? "Acme Inc." : "John Doe"}
+                placeholder={role === "COMPANY" ? "Acme Inc." : "Name"}
                 required
                 disabled={loading}
               />
@@ -128,7 +117,7 @@ export default function RegisterPage() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="email"
                 required
                 disabled={loading}
               />
@@ -136,14 +125,29 @@ export default function RegisterPage() {
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                disabled={loading}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  disabled={loading}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>

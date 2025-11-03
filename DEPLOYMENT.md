@@ -1,6 +1,6 @@
-# Deployment Guide - JobPortal Pro
+# Deployment Guide - Ittihad Placement
 
-Complete guide for deploying JobPortal Pro to production.
+Complete guide for deploying Ittihad Placement to production.
 
 ## Prerequisites
 
@@ -109,7 +109,7 @@ Copy the output for your environment variables.
 
    # App
    NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
-   NEXT_PUBLIC_APP_NAME=JobPortal Pro
+   NEXT_PUBLIC_APP_NAME=Ittihad Placement
    ```
 
 4. **Deploy**

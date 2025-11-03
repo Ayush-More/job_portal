@@ -21,7 +21,7 @@ export async function sendVerificationEmail(email: string, name: string): Promis
 
   await sendEmail({
     to: email,
-    subject: "Verify your email address - JobPortal Pro",
+    subject: "Verify your email address - Ittihad Placement",
     html: emailTemplates.verifyEmail(name, verificationUrl),
   })
 }

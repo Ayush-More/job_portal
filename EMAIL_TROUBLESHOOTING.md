@@ -42,7 +42,7 @@ EMAIL_SECURE="false"
 3. Enable "2-Step Verification" if not already enabled
 4. Under "Signing in to Google", click "App passwords"
 5. Select "Mail" and "Other (Custom name)"
-6. Enter "JobPortal Pro" as the app name
+6. Enter "Ittihad Placement" as the app name
 7. Copy the generated 16-character password
 8. Update your `.env.local` file:
    ```env

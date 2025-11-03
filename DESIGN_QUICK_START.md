@@ -1,6 +1,6 @@
 # 🚀 Design System Quick Start Guide
 
-## Welcome to the Modern JobPortal Pro Design System!
+## Welcome to the Modern Ittihad Placement Design System!
 
 This guide will help you understand and use the new vibrant design system.
 

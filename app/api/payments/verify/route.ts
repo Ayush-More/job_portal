@@ -111,14 +111,14 @@ export async function POST(req: Request) {
     // Send payment confirmation email to job seeker
     await sendEmail({
       to: application.jobSeeker.user.email,
-      subject: "Payment Confirmed - JobPortal Pro",
+      subject: "Payment Confirmed - Ittihad Placement",
       html: emailTemplates.paymentReceived(updatedPayment.amount, application.job.title),
     })
 
     // Send notification email to company
     await sendEmail({
       to: application.job.company.user.email,
-      subject: "New Application with Payment - JobPortal Pro",
+      subject: "New Application with Payment - Ittihad Placement",
       html: emailTemplates.applicationReceived(
         application.job.title,
         application.jobSeeker.user.name || "A job seeker"

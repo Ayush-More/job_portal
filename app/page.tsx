@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +33,7 @@ export default function Home() {
             </h1>
               
               <p className="mx-auto max-w-3xl text-lg md:text-xl text-[var(--muted)] leading-relaxed">
-                Experience the revolutionary job portal where serious candidates meet quality employers. Apply with our unique placement guarantee system and get hired with certainty.
+                Experience the revolutionary Ittihad placement where serious candidates meet quality employers. Apply with our unique placement guarantee system and get hired with certainty.
               </p>
             </div>
 
@@ -54,15 +55,15 @@ export default function Home() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-12 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-3xl font-bold text-[var(--brand-600)]">10K+</div>
+                <div className="text-3xl font-bold text-[var(--brand-600)]">7K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Active Jobs</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[var(--secondary-600)]">50K+</div>
+                <div className="text-3xl font-bold text-[var(--secondary-600)]">35K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Job Seekers</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[var(--accent-600)]">5K+</div>
+                <div className="text-3xl font-bold text-[var(--accent-600)]">1K+</div>
                 <p className="text-sm text-[var(--muted)] mt-2">Companies</p>
               </div>
             </div>
@@ -74,7 +75,7 @@ export default function Home() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[var(--brand-50)] to-[var(--accent-50)]">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16 space-y-4 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)]">Why Choose JobPortal Pro?</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-[var(--heading)]">Why Choose Ittihad placement?</h2>
             <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto">
               We revolutionize job hunting with unique benefits designed for your success
             </p>
@@ -140,6 +141,62 @@ export default function Home() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Trusted By Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-10 animate-slide-up">
+            <h2 className="text-3xl md:text-4xl font-black text-[var(--heading)]">Trusted by 10,000 employers</h2>
+            <p className="text-[var(--muted)] mt-2">Top companies that hire with Ittihad Placement</p>
+          </div>
+
+          {/* Marquee Slider */}
+          <div className="relative overflow-hidden">
+            <div className="flex items-center gap-12 marquee will-change-transform">
+              {[
+                "/companies/comp 1.png",
+                "/companies/comp 2.png",
+                "/companies/comp 3.png",
+                "/companies/comp 4.png",
+                "/companies/comp 5.png",
+                "/companies/comp 6.png",
+                "/companies/comp 7.png",
+                "/companies/comp 8.png",
+                "/companies/comp 9.png",
+                "/companies/comp 10.png",
+                "/companies/comp 11.png",
+              ].map((logo, idx) => (
+                <img key={`logo-a-${idx}`} src={encodeURI(logo)} alt="company logo" className="h-32 w-auto transition" />
+              ))}
+              {[
+                "/companies/comp 1.png",
+                "/companies/comp 2.png",
+                "/companies/comp 3.png",
+                "/companies/comp 4.png",
+                "/companies/comp 5.png",
+                "/companies/comp 6.png",
+                "/companies/comp 7.png",
+                "/companies/comp 8.png",
+                "/companies/comp 9.png",
+                "/companies/comp 10.png",
+                "/companies/comp 11.png",
+              ].map((logo, idx) => (
+                <img key={`logo-b-${idx}`} src={encodeURI(logo)} alt="company logo" className="h-16 w-auto transition" />
+              ))}
+            </div>
+          </div>
+
+          <style jsx>{`
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .marquee {
+              animation: marquee 25s linear infinite;
+            }
+          `}</style>
         </div>
       </section>
 
@@ -290,7 +347,7 @@ export default function Home() {
             Ready to Transform Your Career?
           </h2>
             <p className="text-xl text-white/90 leading-relaxed">
-              Join thousands of job seekers and companies already using JobPortal Pro. Start your journey to success today.
+              Join thousands of job seekers and companies already using Ittihad Placement. Start your journey to success today.
           </p>
           </div>
 

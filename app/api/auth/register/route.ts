@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { registerSchema } from "@/lib/validations"
-import { sendEmail, emailTemplates } from "@/lib/email"
+import { sendEmail } from "@/lib/email"
 
 export async function POST(req: Request) {
   try {
@@ -24,14 +24,14 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10)
 
-    // Create user and profile (auto-verified)
+    // Create user and profile (email not yet verified)
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
         password: hashedPassword,
         name: validatedData.name,
         role: validatedData.role,
-        emailVerified: new Date(),
+        emailVerified: null,
         ...(validatedData.role === "COMPANY"
           ? {
               company: {
@@ -48,19 +48,36 @@ export async function POST(req: Request) {
       },
     })
 
-    // Optionally send a welcome email (if email is configured)
-    try {
-      await sendEmail({
-        to: user.email,
-        subject: "Welcome to Ittihad Placement",
-        html: `<p>Hi ${user.name || "there"},</p><p>Your account has been created successfully.</p>`,
-      })
-    } catch (_) {}
+    // Generate and store OTP (15 min expiry) and send via email
+    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    const expires = new Date(Date.now() + 15 * 60 * 1000)
+    await prisma.verificationToken.upsert({
+      where: { identifier: user.email },
+      update: { token: otp, expires },
+      create: { identifier: user.email, token: otp, expires },
+    })
+    const emailResult = await sendEmail({
+      to: user.email,
+      subject: "Your Ittihad Placement verification code",
+      html: `<div style="font-family:Arial,sans-serif;line-height:1.6">
+        <h2>Verify your email</h2>
+        <p>Your one-time verification code is:</p>
+        <div style=\"font-size:28px;font-weight:700;letter-spacing:6px\">${otp}</div>
+        <p>This code will expire in 15 minutes.</p>
+      </div>`,
+    })
 
+    // In development mode (when email is not configured), include OTP in response
+    const isDevelopment = process.env.NODE_ENV === 'development' && !emailResult.success
+    
     return NextResponse.json(
       { 
-        message: "User created successfully.",
-        userId: user.id
+        message: emailResult.success 
+          ? "User created successfully. Please verify your email with the OTP sent."
+          : "User created successfully. Please verify your email with the OTP sent (check console for OTP in development mode).",
+        userId: user.id,
+        email: user.email,
+        ...(isDevelopment && { otp }) // Include OTP in development mode only
       },
       { status: 201 }
     )

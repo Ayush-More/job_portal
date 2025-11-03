@@ -2,7 +2,7 @@
 
 ## Color System Overview
 
-The redesigned JobPortal Pro uses a modern, vibrant color palette designed to inspire action, build trust, and create visual excitement.
+The redesigned Ittihad Placement uses a modern, vibrant color palette designed to inspire action, build trust, and create visual excitement.
 
 ---
 

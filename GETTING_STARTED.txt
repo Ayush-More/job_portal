@@ -1,5 +1,5 @@
 ================================================================================
-                    JOBPORTAL PRO - GETTING STARTED
+                    Ittihad Placement - GETTING STARTED
 ================================================================================
 
 🎉 CONGRATULATIONS! Your complete job portal MVP is ready!

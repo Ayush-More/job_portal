@@ -4,12 +4,13 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
+import { WhatsAppChat } from "@/components/shared/whatsapp-chat";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "JobPortal Pro - Find Your Dream Job with Placement Guarantee",
-  description: "Revolutionary job portal with pay-to-apply model and placement guarantees",
+  title: "Ittihad Placement - Find Your Dream Job with Placement Guarantee",
+  description: "Revolutionary Ittihad placement with pay-to-apply model and placement guarantees",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -39,6 +40,10 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <WhatsAppChat 
+            phoneNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919876543210"}
+            message={process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || "Hello! I need help with Ittihad Placement."}
+          />
         </Providers>
       </body>
     </html>

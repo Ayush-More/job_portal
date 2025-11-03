@@ -1,8 +1,8 @@
-# JobPortal Pro - Project Summary
+# Ittihad Placement - Project Summary
 
 ## 🎉 Project Complete!
 
-A fully functional job portal MVP with placement guarantees has been successfully built from scratch.
+A fully functional Ittihad placement MVP with placement guarantees has been successfully built from scratch.
 
 ## 📊 Project Statistics
 
