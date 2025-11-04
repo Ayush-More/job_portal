@@ -2,24 +2,72 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { Briefcase, LogOut, User, Sparkles, Menu, X } from "lucide-react"
+import { 
+  Briefcase, 
+  LogOut, 
+  User, 
+  Sparkles, 
+  Menu, 
+  X,
+  Home,
+  Globe,
+  Building2,
+  UserPlus,
+  HelpCircle,
+  LogIn,
+  UserCheck,
+  ChevronDown
+} from "lucide-react"
 
 export function Navbar() {
   const { data: session, status } = useSession()
+  const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
+  const [isIndustryOpen, setIsIndustryOpen] = useState(false)
+  const [loadingCategories, setLoadingCategories] = useState(true)
+
+  // Check if user is a company user
+  const isCompanyUser = session?.user?.role === "COMPANY"
 
   // Close mobile menu when clicking outside or on route change
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
+      // For company users, close at lg breakpoint (1024px), for others at md breakpoint (768px)
+      const breakpoint = isCompanyUser ? 1024 : 768
+      if (window.innerWidth >= breakpoint) {
         setIsMobileMenuOpen(false)
       }
     }
 
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
+  }, [isCompanyUser])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [pathname])
+
+  // Load categories
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories", { cache: "no-store" })
+        const data = await res.json()
+        if (res.ok) {
+          setCategories((data?.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        }
+      } catch (e) {
+        // ignore
+      } finally {
+        setLoadingCategories(false)
+      }
+    }
+    loadCategories()
   }, [])
 
   // Prevent body scroll when mobile menu is open
@@ -34,6 +82,24 @@ export function Navbar() {
     }
   }, [isMobileMenuOpen])
 
+  // Get WhatsApp URL
+  const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "971502697904"
+  const whatsappMessage = process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || "Hello! I need help with Ittihad Placement."
+  const formattedPhone = whatsappPhone.replace(/\D/g, "")
+  const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`
+
+  const handleWhatsAppClick = () => {
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer")
+  }
+
+  const getDashboardPath = () => {
+    if (session?.user) {
+      const role = session.user.role.toLowerCase().replace("_", "-")
+      return `/dashboard/${role}`
+    }
+    return "/dashboard"
+  }
+
   return (
     <>
     <nav className="sticky top-0 z-[10000] border-b-2 border-[var(--brand-200)] bg-gradient-to-r from-white/80 via-[var(--brand-50)]/80 to-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.7)]">
@@ -47,8 +113,8 @@ export function Navbar() {
             <span className="text-xl font-bold tracking-tight bg-gradient-brand">Ittihad Placement</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1 sm:gap-3">
+          {/* Desktop Navigation - Hidden for company users on screens < lg, hidden for others on screens < md */}
+          <div className={`hidden ${isCompanyUser ? "lg:flex" : "md:flex"} items-center gap-1 sm:gap-3`}>
             {status === "loading" ? (
               <div className="h-8 w-24 animate-shimmer rounded-lg" />
             ) : session ? (
@@ -88,10 +154,10 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Show on mobile for all users, and on desktop for company users */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-md text-[var(--brand-600)] hover:bg-[var(--brand-50)] transition-colors"
+            className={`${isCompanyUser ? "lg:hidden" : "md:hidden"} p-2 rounded-md text-[var(--brand-600)] hover:bg-[var(--brand-50)] transition-colors`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -104,9 +170,9 @@ export function Navbar() {
       </div>
     </nav>
 
-    {/* Mobile Sidebar (outside nav to avoid containing block clipping) */}
+    {/* Mobile Sidebar - Show on mobile for all users, and on desktop for company users */}
     <div
-      className={`fixed inset-0 z-[10001] md:hidden transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[10001] ${isCompanyUser ? "lg:hidden" : "md:hidden"} transition-opacity duration-300 ${
         isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
@@ -142,72 +208,145 @@ export function Navbar() {
           </div>
 
           {/* Sidebar Content */}
-          <div className="flex-1 overflow-y-auto p-4">
-            {status === "loading" ? (
-              <div className="space-y-4">
-                <div className="h-12 w-full animate-shimmer rounded-lg" />
-                <div className="h-12 w-full animate-shimmer rounded-lg" />
-                <div className="h-12 w-full animate-shimmer rounded-lg" />
-              </div>
-            ) : session ? (
-              <div className="space-y-2">
-                <Link
-                  href="/jobs"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
-                >
-                  <Briefcase className="mr-3 h-5 w-5" />
-                  Browse Jobs
-                </Link>
-                
-                <Link
-                  href={`/dashboard/${session.user.role.toLowerCase().replace("_", "-")}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
-                >
-                  <User className="mr-3 h-5 w-5" />
-                  Dashboard
-                </Link>
-                
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false)
-                    signOut({ callbackUrl: "/" })
-                  }}
-                  className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
-                >
-                  <LogOut className="mr-3 h-5 w-5" />
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Link
-                  href="/jobs"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
-                >
-                  <Briefcase className="mr-3 h-5 w-5" />
-                  Browse Jobs
-                </Link>
-                
-                <Link
-                  href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
-                >
-                  <User className="mr-3 h-5 w-5" />
-                  Sign In
-                </Link>
-                
-                <Link
-                  href="/register"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center w-full px-4 py-3 rounded-lg bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] text-white hover:shadow-lg hover:shadow-[rgba(168,85,247,0.4)] transition-all font-medium"
-                >
-                  Get Started
-                </Link>
-              </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            {/* Home (Dashboard) */}
+            <Link
+              href={getDashboardPath()}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+            >
+              <Home className="mr-3 h-5 w-5" />
+              Home (Dashboard)
+            </Link>
+
+            {/* Language EN */}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                // Language selector functionality can be added here
+              }}
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium text-left"
+            >
+              <Globe className="mr-3 h-5 w-5" />
+              Language EN
+            </button>
+
+            {/* Industry dropdown */}
+            <div className="space-y-1">
+              <button
+                onClick={() => setIsIndustryOpen(!isIndustryOpen)}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <div className="flex items-center">
+                  <Building2 className="mr-3 h-5 w-5" />
+                  Industry
+                </div>
+                <ChevronDown className={`h-4 w-4 transition-transform ${isIndustryOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isIndustryOpen && (
+                <div className="ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+                  {loadingCategories ? (
+                    <div className="px-4 py-2 text-sm text-gray-500">Loading...</div>
+                  ) : categories.length === 0 ? (
+                    <div className="px-4 py-2 text-sm text-gray-500">No categories available</div>
+                  ) : (
+                    categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/jobs?category=${encodeURIComponent(category.name)}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-600 hover:text-[var(--brand-600)] hover:bg-gray-50 rounded transition-colors"
+                      >
+                        {category.name}
+                      </Link>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Hire - Only show for company users */}
+            {session?.user?.role === "COMPANY" && (
+              <Link
+                href="/dashboard/company/jobs/new"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <UserPlus className="mr-3 h-5 w-5" />
+                Hire
+              </Link>
+            )}
+
+            {/* Find work (Browse job) */}
+            <Link
+              href="/jobs"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+            >
+              <Briefcase className="mr-3 h-5 w-5" />
+              Find work
+            </Link>
+
+            {/* Help center */}
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                handleWhatsAppClick()
+              }}
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium text-left"
+            >
+              <HelpCircle className="mr-3 h-5 w-5" />
+              Help center
+            </button>
+
+            {/* Login - Only show if not logged in */}
+            {!session && (
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <LogIn className="mr-3 h-5 w-5" />
+                Login
+              </Link>
+            )}
+
+            {/* Registration - Only show if not logged in */}
+            {!session && (
+              <Link
+                href="/register"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <UserCheck className="mr-3 h-5 w-5" />
+                Registration
+              </Link>
+            )}
+
+            {/* Company registration - Only show if not logged in */}
+            {!session && (
+              <Link
+                href="/register?role=COMPANY"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <Building2 className="mr-3 h-5 w-5" />
+                Company registration
+              </Link>
+            )}
+
+            {/* Sign Out - Only show if logged in */}
+            {session && (
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false)
+                  signOut({ callbackUrl: "/" })
+                }}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              >
+                <LogOut className="mr-3 h-5 w-5" />
+                Sign Out
+              </button>
             )}
           </div>
         </div>

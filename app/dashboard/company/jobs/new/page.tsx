@@ -15,7 +15,7 @@ export default function NewJobPage() {
   const [loading, setLoading] = useState(false)
   const { addToast } = useToast()
   
-  const LOCATIONS = ["Dubai", "Sharjha", "Abu Dhabi", "Rasalkhema", "Ajman"]
+  const LOCATIONS = ["Dubai", "Sharjha", "Abu Dhabi", "Rasalkhema"]
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
   const [loadingCategories, setLoadingCategories] = useState(true)

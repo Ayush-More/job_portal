@@ -8,12 +8,31 @@ export default function Home() {
   return (
     <div className="flex flex-col overflow-hidden">
       {/* Hero Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Animated background elements */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[600px] flex items-center">
+        {/* Background Images - Dubai Landmarks */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-200)] rounded-full blur-3xl opacity-20 animate-float"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-200)] rounded-full blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 right-10 w-72 h-72 bg-gradient-to-br from-[var(--secondary-500)] to-[var(--secondary-200)] rounded-full blur-3xl opacity-15" style={{ animation: 'float 5s ease-in-out infinite', animationDelay: '1s' }}></div>
+          {/* Burj Khalifa Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')",
+              opacity: 0.85
+            }}
+          />
+          {/* Future Museum of the Future Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1602524206684-fdf6393ec7ca?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')",
+              opacity: 0.4,
+              mixBlendMode: 'multiply'
+            }}
+          />
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/60"></div>
+          {/* Animated gradient elements */}
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[var(--brand-500)] to-[var(--brand-200)] rounded-full blur-3xl opacity-10 animate-float"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-[var(--accent-500)] to-[var(--accent-200)] rounded-full blur-3xl opacity-10 animate-float" style={{ animationDelay: '2s' }}></div>
         </div>
 
         <div className="container mx-auto max-w-6xl">

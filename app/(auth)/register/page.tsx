@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,10 +12,19 @@ import { Eye, EyeOff } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [role, setRole] = useState<"JOB_SEEKER" | "COMPANY">("JOB_SEEKER")
   const [showPassword, setShowPassword] = useState(false)
+
+  // Check for role in URL params
+  useEffect(() => {
+    const roleParam = searchParams.get("role")
+    if (roleParam === "COMPANY") {
+      setRole("COMPANY")
+    }
+  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
