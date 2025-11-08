@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { formatDate } from "@/lib/utils"
+import { formatDate, formatCurrency } from "@/lib/utils"
 
 export default async function CompanyJobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -88,10 +88,12 @@ export default async function CompanyJobDetailPage({ params }: { params: Promise
               <div className="text-sm text-gray-500">Application Fee</div>
               <div className="font-medium">Set by Admin</div>
             </div>
-            {job.salaryMin !== null && job.salaryMax !== null && (
+            {typeof job.salaryMin === "number" && typeof job.salaryMax === "number" && (
               <div className="sm:col-span-2">
                 <div className="text-sm text-gray-500">Salary Range</div>
-                <div className="font-medium">₹{job.salaryMin?.toLocaleString()} - ₹{job.salaryMax?.toLocaleString()}</div>
+                <div className="font-medium">
+                  {formatCurrency(job.salaryMin * 100)} - {formatCurrency(job.salaryMax * 100)}
+                </div>
               </div>
             )}
             <div className="sm:col-span-2">

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { MapPin, IndianRupee, Briefcase, Clock, Shield, Building } from "lucide-react"
+import { MapPin, Coins, Briefcase, Clock, Shield, Building, CheckCircle } from "lucide-react"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import Script from "next/script"
 import Link from "next/link"
@@ -27,8 +27,9 @@ export default function JobDetailPage() {
   const [applying, setApplying] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [showApplyForm, setShowApplyForm] = useState(false)
-  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default ₹10
+  const [applicationFee, setApplicationFee] = useState<number>(1000) // Default AED 10.00
   const [hasApplied, setHasApplied] = useState<boolean>(false)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
 
   useEffect(() => {
     fetchJob()
@@ -149,8 +150,8 @@ export default function JobDetailPage() {
 
             addToast("Application submitted and payment completed!", "success")
             setHasApplied(true)
-            setShowApplyForm(false)
-            router.push("/dashboard/job-seeker")
+            setShowSuccessPopup(true)
+            setShowApplyForm(true)
           } catch (e) {
             addToast((e as Error).message, "error")
           }
@@ -244,11 +245,11 @@ export default function JobDetailPage() {
                     <Briefcase className="mr-2 h-5 w-5" />
                     <span>{job.category}</span>
                   </div>
-                  {job.salaryMin && job.salaryMax && (
+                  {typeof job.salaryMin === "number" && typeof job.salaryMax === "number" && (
                     <div className="flex items-center text-gray-600">
-                      <IndianRupee className="mr-2 h-5 w-5" />
+                      <Coins className="mr-2 h-5 w-5" />
                       <span>
-                        ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
+                        {formatCurrency(job.salaryMin * 100)} - {formatCurrency(job.salaryMax * 100)}
                       </span>
                     </div>
                   )}
@@ -288,49 +289,74 @@ export default function JobDetailPage() {
             {showApplyForm && session?.user.role === "JOB_SEEKER" && (
               <div 
                 className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                onClick={() => setShowApplyForm(false)}
+                onClick={() => {
+                  setShowApplyForm(false)
+                  setShowSuccessPopup(false)
+                }}
               >
                 <Card 
                   className="w-full max-w-md max-h-[90vh] overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <CardHeader>
-                    <CardTitle>Submit Your Application</CardTitle>
-                    <CardDescription>
-                      Add a cover letter to introduce yourself
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="coverLetter">Cover Letter (Optional)</Label>
-                        <Textarea
-                          id="coverLetter"
-                          placeholder="Tell the employer why you're a great fit..."
-                          rows={6}
-                          value={coverLetter}
-                          onChange={(e) => setCoverLetter(e.target.value)}
-                        />
-                      </div>
+                  {showSuccessPopup ? (
+                    <>
+                      <CardHeader className="text-center">
+                        <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
+                        <CardTitle className="mt-4 text-2xl">Application Submitted!</CardTitle>
+                        <CardDescription className="text-sm">
+                          Your application was submitted successfully. We&apos;ll keep you posted on updates.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                        <Button onClick={() => { setShowApplyForm(false); setShowSuccessPopup(false); router.push("/dashboard/job-seeker") }}>
+                          Go to Dashboard
+                        </Button>
+                        <Button variant="outline" onClick={() => { setShowApplyForm(false); setShowSuccessPopup(false) }}>
+                          Close
+                        </Button>
+                      </CardContent>
+                    </>
+                  ) : (
+                    <>
+                      <CardHeader>
+                        <CardTitle>Submit Your Application</CardTitle>
+                        <CardDescription>
+                          Add a cover letter to introduce yourself
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="coverLetter">Cover Letter (Optional)</Label>
+                            <Textarea
+                              id="coverLetter"
+                              placeholder="Tell the employer why you're a great fit..."
+                              rows={6}
+                              value={coverLetter}
+                              onChange={(e) => setCoverLetter(e.target.value)}
+                            />
+                          </div>
 
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={handleApply}
-                          disabled={applying}
-                          className="flex-1"
-                        >
-                          {applying ? "Submitting..." : `Pay ₹${(applicationFee / 100).toFixed(2)} & Apply`}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowApplyForm(false)}
-                          disabled={applying}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={handleApply}
+                              disabled={applying}
+                              className="flex-1"
+                            >
+                          {applying ? "Submitting..." : `Pay AED ${(applicationFee / 100).toFixed(2)} & Apply`}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => setShowApplyForm(false)}
+                              disabled={applying}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </>
+                  )}
                 </Card>
               </div>
             )}
@@ -345,7 +371,7 @@ export default function JobDetailPage() {
                 <div>
                   <div className="text-sm text-gray-600">Application Fee</div>
                    <div className="text-2xl font-bold text-blue-600">
-                     ₹{(applicationFee / 100).toFixed(2)}
+                     AED {(applicationFee / 100).toFixed(2)}
                    </div>
                 </div>
 

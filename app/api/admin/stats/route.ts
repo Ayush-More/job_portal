@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { formatCurrency } from "@/lib/utils"
 
 export async function GET(req: Request) {
   try {
@@ -63,7 +64,7 @@ export async function GET(req: Request) {
       },
       revenue: {
         total: totalRevenue,
-        formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
+        formatted: formatCurrency(totalRevenue),
       },
     }
 

@@ -16,14 +16,14 @@ export async function GET() {
     if (!feeConfig) {
       feeConfig = await prisma.applicationFeeConfig.create({
         data: {
-          amountInCents: 1000, // Default ₹10
+          amountInCents: 1000, // Default AED 10.00
         },
       })
     }
 
     return NextResponse.json({
       amountInCents: feeConfig.amountInCents,
-      amountInRupees: (feeConfig.amountInCents / 100).toFixed(2),
+      amountInAed: (feeConfig.amountInCents / 100).toFixed(2),
     })
   } catch (error: any) {
     console.error("Error fetching application fee:", error)
@@ -47,7 +47,7 @@ export async function PATCH(req: Request) {
 
     if (!amountInCents || amountInCents < 100) {
       return NextResponse.json(
-        { error: "Amount must be at least ₹1.00 (100 cents)" },
+        { error: "Amount must be at least AED 1.00 (100 fils)" },
         { status: 400 }
       )
     }
@@ -74,7 +74,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json({
       success: true,
       amountInCents: feeConfig.amountInCents,
-      amountInRupees: (feeConfig.amountInCents / 100).toFixed(2),
+      amountInAed: (feeConfig.amountInCents / 100).toFixed(2),
     })
   } catch (error: any) {
     console.error("Error updating application fee:", error)

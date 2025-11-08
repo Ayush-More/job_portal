@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     if (!feeConfig) {
       feeConfig = await prisma.applicationFeeConfig.create({
         data: {
-          amountInCents: 1000, // Default ₹10
+          amountInCents: 1000, // Default AED 10.00
         },
       })
     }
@@ -72,14 +72,14 @@ export async function POST(req: Request) {
       data: {
         applicationId: null, // Will be set after successful payment
         amount: amountInCents,
-        currency: "INR",
+        currency: "AED",
         status: "PENDING",
       },
     })
 
     const order = await razorpay.orders.create({
       amount: amountInCents,
-      currency: "INR",
+      currency: "AED",
       receipt: payment.id,
       notes: { 
         jobId,

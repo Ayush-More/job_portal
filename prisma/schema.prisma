@@ -193,7 +193,7 @@ model Payment {
   id              String        @id @default(cuid())
   applicationId   String?       @unique // Can be null during payment process
   amount          Int           // Amount in cents
-  currency        String        @default("INR")
+  currency        String        @default("AED")
   status          PaymentStatus @default(PENDING)
   stripePaymentId String?       @unique
   stripeCustomerId String?
@@ -269,7 +269,7 @@ model Category {
 
 model ApplicationFeeConfig {
   id              String   @id @default(cuid())
-  amountInCents   Int      @default(1000) // Default ₹10 in cents
+  amountInCents   Int      @default(1000) // Default AED 10.00 in fils
   updatedAt       DateTime @updatedAt
   updatedBy       String?  // Admin user ID who last updated
 }

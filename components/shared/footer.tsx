@@ -57,6 +57,61 @@ export function Footer() {
               </ul>
             </div>
           </div>
+
+          <div className="animate-slide-in-right stagger-3 md:col-span-full w-full">
+            <h3 className="text-sm font-bold text-[var(--brand-700)] uppercase tracking-wider">Contact Us</h3>
+            <div className="mt-6 grid gap-6 text-sm text-[var(--muted)] leading-relaxed sm:grid-cols-2 lg:grid-cols-4 md:gap-10">
+              <div className="flex flex-col gap-3">
+                <p className="font-semibold text-[var(--brand-700)] uppercase tracking-wider">Address</p>
+                <address className="not-italic space-y-1">
+                  <p>Al Nahda Ittihad Placement</p>
+                  <p>P.O. Box 261911</p>
+                  <p>Nahda, Dubai</p>
+                  <p>United Arab Emirates</p>
+                </address>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="font-semibold text-[var(--brand-700)] uppercase tracking-wider">Phone</p>
+                <p className="text-base font-medium md:text-lg">
+                  <a href="tel:+971502697904" className="hover:text-[var(--brand-600)] transition-colors duration-200">
+                    +971 50 269 7904
+                  </a>
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="font-semibold text-[var(--brand-700)] uppercase tracking-wider">Email</p>
+                <p className="text-base font-medium md:text-lg">
+                  <a href="mailto:support@ittihadplacement.com" className="hover:text-[var(--brand-600)] transition-colors duration-200">
+                    support@ittihadplacement.com
+                  </a>
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="font-semibold text-[var(--brand-700)] uppercase tracking-wider">Visit Us</p>
+                {/* <a
+                  href="https://www.google.com/maps/search/?api=1&query=Al+Nahda+Ittihad+Placement+Dubai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 text-[var(--brand-600)] hover:text-[var(--brand-800)] transition-colors duration-200"
+                >
+                  Open in Google Maps
+                </a> */}
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Al+Nahda+Ittihad+Placement+Dubai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block overflow-hidden rounded-lg  shadow-sm transition-transform duration-200 hover:scale-[1.02]"
+                >
+                  <img
+                    src="/google map.png"
+                    alt="Map showing the location of Al Nahda Ittihad Placement in Dubai"
+                    className="w-full h-auto max-w-[190px] mx-auto rounded-md"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-12 border-t-2 border-[var(--brand-200)] pt-8">

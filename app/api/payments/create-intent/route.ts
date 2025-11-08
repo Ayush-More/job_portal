@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         },
         create: {
           applicationId,
-          amount: 1000, // Default application fee in cents (₹10)
+          amount: 1000, // Default application fee in fils (AED 10.00)
           status: "COMPLETED", // Mark as completed for development
         },
       })
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     if (!feeConfig) {
       feeConfig = await prisma.applicationFeeConfig.create({
         data: {
-          amountInCents: 1000, // Default ₹10
+          amountInCents: 1000, // Default AED 10.00
         },
       })
     }

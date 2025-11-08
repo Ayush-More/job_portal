@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ArrowLeft, FileText, Calendar, IndianRupee, Building2 } from "lucide-react"
+import { ArrowLeft, FileText, Calendar, Coins, Building2 } from "lucide-react"
 import { formatCurrency, formatDate } from "@/lib/utils"
 
 export default async function JobSeekerApplicationsPage() {
@@ -43,7 +43,7 @@ export default async function JobSeekerApplicationsPage() {
   }
 
   const statusColors = {
-    SUBMITTED: "secondary",
+    SUBMITTED: "success",
     UNDER_REVIEW: "default",
     INTERVIEW_SCHEDULED: "default",
     ACCEPTED: "success",
@@ -85,7 +85,7 @@ export default async function JobSeekerApplicationsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-            <IndianRupee className="h-4 w-4 text-gray-600" />
+            <Coins className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalSpent)}</div>
@@ -136,22 +136,27 @@ export default async function JobSeekerApplicationsPage() {
 
                     {/* Job Details */}
                     <div className="flex-1">
-                      <div className="flex items-start justify-between">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900 mb-1">
                             {application.job.title}
                           </h3>
+                          {application.job.category && (
+                            <p className="text-sm text-[var(--brand-600)] font-medium mb-1">
+                              {application.job.category}
+                            </p>
+                          )}
                           <p className="text-gray-600 mb-2">
                             {application.job.company.companyName}
                           </p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
+                          <div className="flex flex-col gap-2 text-sm text-gray-500 sm:flex-row sm:items-center sm:gap-4">
+                            <span className="flex items-center gap-1 whitespace-nowrap">
                               <Calendar className="h-4 w-4" />
                               Applied {formatDate(application.appliedAt)}
                             </span>
                             {application.payment && (
-                              <span className="flex items-center gap-1">
-                                <IndianRupee className="h-4 w-4" />
+                              <span className="flex items-center gap-1 whitespace-nowrap">
+                                <Coins className="h-4 w-4" />
                                 {formatCurrency(application.payment.amount)}
                               </span>
                             )}
@@ -159,7 +164,10 @@ export default async function JobSeekerApplicationsPage() {
                         </div>
                         
                         {/* Status Badge */}
-                        <Badge variant={statusColors[application.status]} className="ml-4">
+                        <Badge
+                          variant={statusColors[application.status]}
+                          className="w-fit self-start sm:ml-4"
+                        >
                           {application.status.replace("_", " ")}
                         </Badge>
                       </div>

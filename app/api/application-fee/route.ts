@@ -9,14 +9,14 @@ export async function GET() {
     if (!feeConfig) {
       feeConfig = await prisma.applicationFeeConfig.create({
         data: {
-          amountInCents: 1000, // Default ₹10
+          amountInCents: 1000, // Default AED 10.00
         },
       })
     }
 
     return NextResponse.json({
       amountInCents: feeConfig.amountInCents,
-      amountInRupees: (feeConfig.amountInCents / 100).toFixed(2),
+      amountInAed: (feeConfig.amountInCents / 100).toFixed(2),
     })
   } catch (error: any) {
     console.error("Error fetching application fee:", error)

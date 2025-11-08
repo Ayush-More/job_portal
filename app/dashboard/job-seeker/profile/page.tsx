@@ -21,6 +21,9 @@ export default function JobSeekerProfilePage() {
   const [skills, setSkills] = useState("")
   const [currentlyEmployed, setCurrentlyEmployed] = useState<boolean | undefined>(undefined)
   const [gender, setGender] = useState<string>("")
+  const [qualificationStatus, setQualificationStatus] = useState<"QUALIFIED" | "NON_QUALIFIED" | "">("")
+  const [isFresher, setIsFresher] = useState<boolean | undefined>(undefined)
+  const [maritalStatus, setMaritalStatus] = useState<"MARRIED" | "UNMARRIED" | "">("")
 
   useEffect(() => {
     if (session?.user.role !== "JOB_SEEKER") {
@@ -39,8 +42,19 @@ export default function JobSeekerProfilePage() {
           const profileData = await response.json()
           setProfile(profileData)
           setSkills(profileData.skills?.join(", ") || "")
-          setCurrentlyEmployed(typeof profileData.currentlyEmployed === 'boolean' ? profileData.currentlyEmployed : undefined)
+          setCurrentlyEmployed(typeof profileData.currentlyEmployed === "boolean" ? profileData.currentlyEmployed : undefined)
           setGender(profileData.gender || "")
+          setQualificationStatus(
+            profileData.qualificationStatus === "QUALIFIED" || profileData.qualificationStatus === "NON_QUALIFIED"
+              ? profileData.qualificationStatus
+              : ""
+          )
+          setIsFresher(typeof profileData.isFresher === "boolean" ? profileData.isFresher : undefined)
+          setMaritalStatus(
+            profileData.maritalStatus === "MARRIED" || profileData.maritalStatus === "UNMARRIED"
+              ? profileData.maritalStatus
+              : ""
+          )
         }
       } catch (error) {
         console.error("Error fetching profile:", error)
@@ -62,15 +76,37 @@ export default function JobSeekerProfilePage() {
       const formData = new FormData(e.currentTarget)
       const resumeFile = formData.get("resume") as File
 
+      const getStringValue = (key: string) => {
+        const value = formData.get(key)
+        if (typeof value !== "string") return undefined
+        const trimmed = value.trim()
+        return trimmed.length ? trimmed : undefined
+      }
+
       // Prepare profile data
       const profileData = {
-        phone: formData.get("phone") as string,
-        location: formData.get("location") as string,
+        firstName: getStringValue("firstName"),
+        lastName: getStringValue("lastName"),
+        motherName: getStringValue("motherName"),
+        fatherName: getStringValue("fatherName"),
+        dateOfBirth: getStringValue("dateOfBirth"),
+        nationality: getStringValue("nationality"),
+        qualificationStatus: qualificationStatus || undefined,
+        isFresher: typeof isFresher === "boolean" ? isFresher : undefined,
+        jobCategory: getStringValue("jobCategory"),
+        phone: getStringValue("phone"),
+        alternatePhone: getStringValue("alternatePhone"),
+        contactEmail: getStringValue("contactEmail"),
+        state: getStringValue("state"),
+        district: getStringValue("district"),
+        village: getStringValue("village"),
+        maritalStatus: maritalStatus || undefined,
+        location: getStringValue("location"),
         skills: skills.split(",").map(s => s.trim()).filter(Boolean),
         experience: parseInt(formData.get("experience") as string) || 0,
-        education: formData.get("education") as string,
-        bio: formData.get("bio") as string,
-        currentlyEmployed: typeof currentlyEmployed === 'boolean' ? currentlyEmployed : undefined,
+        education: getStringValue("education"),
+        bio: getStringValue("bio"),
+        currentlyEmployed: typeof currentlyEmployed === "boolean" ? currentlyEmployed : undefined,
         gender: gender || undefined,
       }
 
@@ -167,27 +203,179 @@ export default function JobSeekerProfilePage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="+1 (555) 123-4567"
-                defaultValue={profile?.phone || ""}
-                disabled={loading}
-              />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  placeholder="First Name"
+                  defaultValue={profile?.firstName || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Last Name"
+                  defaultValue={profile?.lastName || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                name="location"
-                placeholder="e.g. San Francisco, CA"
-                defaultValue={profile?.location || ""}
-                disabled={loading}
-              />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="motherName">Mother's Name</Label>
+                <Input
+                  id="motherName"
+                  name="motherName"
+                  placeholder="Mother's Name"
+                  defaultValue={profile?.motherName || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="fatherName">Father's Name</Label>
+                <Input
+                  id="fatherName"
+                  name="fatherName"
+                  placeholder="Father's Name"
+                  defaultValue={profile?.fatherName || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Input
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  type="date"
+                  defaultValue={profile?.dateOfBirth || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nationality">Nationality</Label>
+                <Input
+                  id="nationality"
+                  name="nationality"
+                  placeholder="Nationality"
+                  defaultValue={profile?.nationality || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="jobCategory">Job Category</Label>
+                <Input
+                  id="jobCategory"
+                  name="jobCategory"
+                  placeholder="e.g. IT, Finance, Marketing"
+                  defaultValue={profile?.jobCategory || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Mobile Number</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  defaultValue={profile?.phone || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="alternatePhone">Family Mobile Number</Label>
+                <Input
+                  id="alternatePhone"
+                  name="alternatePhone"
+                  type="tel"
+                  placeholder="+1 (555) 765-4321"
+                  defaultValue={profile?.alternatePhone || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="contactEmail">Gmail ID</Label>
+                <Input
+                  id="contactEmail"
+                  name="contactEmail"
+                  type="email"
+                  placeholder="example@gmail.com"
+                  defaultValue={profile?.contactEmail || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  name="location"
+                  placeholder="e.g. San Francisco, CA"
+                  defaultValue={profile?.location || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="state">State Name</Label>
+                <Input
+                  id="state"
+                  name="state"
+                  placeholder="State"
+                  defaultValue={profile?.state || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="district">District Name</Label>
+                <Input
+                  id="district"
+                  name="district"
+                  placeholder="District"
+                  defaultValue={profile?.district || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="village">Gaon (Village) Name</Label>
+                <Input
+                  id="village"
+                  name="village"
+                  placeholder="Village"
+                  defaultValue={profile?.village || ""}
+                  disabled={loading}
+                  required
+                />
+              </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -277,17 +465,89 @@ export default function JobSeekerProfilePage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="skills">Skills</Label>
-              <Input
-                id="skills"
-                name="skills"
-                placeholder="JavaScript, React, Node.js, Python"
-                value={skills}
-                onChange={(e) => setSkills(e.target.value)}
-                disabled={loading}
-              />
-              <p className="text-sm text-gray-500">Separate skills with commas</p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Qualification Status</Label>
+                <div className="rounded-lg border p-3 bg-white">
+                  <div className="flex gap-3">
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        qualificationStatus === "QUALIFIED"
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="qualificationStatus"
+                        className="sr-only"
+                        checked={qualificationStatus === "QUALIFIED"}
+                        onChange={() => setQualificationStatus("QUALIFIED")}
+                        disabled={loading}
+                      />
+                      Qualified
+                    </label>
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        qualificationStatus === "NON_QUALIFIED"
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="qualificationStatus"
+                        className="sr-only"
+                        checked={qualificationStatus === "NON_QUALIFIED"}
+                        onChange={() => setQualificationStatus("NON_QUALIFIED")}
+                        disabled={loading}
+                      />
+                      Non Qualified
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Experience Level</Label>
+                <div className="rounded-lg border p-3 bg-white">
+                  <div className="flex gap-3">
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        isFresher === true
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="experienceLevel"
+                        className="sr-only"
+                        checked={isFresher === true}
+                        onChange={() => setIsFresher(true)}
+                        disabled={loading}
+                      />
+                      Fresher
+                    </label>
+                    <label
+                      className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                        isFresher === false
+                          ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                          : "border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="experienceLevel"
+                        className="sr-only"
+                        checked={isFresher === false}
+                        onChange={() => setIsFresher(false)}
+                        disabled={loading}
+                      />
+                      Experienced
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -300,7 +560,64 @@ export default function JobSeekerProfilePage() {
                 placeholder="5"
                 defaultValue={profile?.experience || ""}
                 disabled={loading}
+                required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Marital Status</Label>
+              <div className="rounded-lg border p-3 bg-white">
+                <div className="flex gap-3">
+                  <label
+                    className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                      maritalStatus === "MARRIED"
+                        ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                        : "border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="maritalStatus"
+                      className="sr-only"
+                      checked={maritalStatus === "MARRIED"}
+                      onChange={() => setMaritalStatus("MARRIED")}
+                      disabled={loading}
+                    />
+                    Married
+                  </label>
+                  <label
+                    className={`flex-1 cursor-pointer select-none rounded-md border px-4 py-2 text-sm transition-all ${
+                      maritalStatus === "UNMARRIED"
+                        ? "border-[var(--brand-400)] bg-[var(--brand-50)] text-[var(--brand-700)] ring-2 ring-[var(--brand-200)]"
+                        : "border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="maritalStatus"
+                      className="sr-only"
+                      checked={maritalStatus === "UNMARRIED"}
+                      onChange={() => setMaritalStatus("UNMARRIED")}
+                      disabled={loading}
+                    />
+                    Unmarried
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="skills">Skills</Label>
+              <Input
+                id="skills"
+                name="skills"
+                placeholder="JavaScript, React, Node.js, Python"
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+                disabled={loading}
+                required
+              />
+              <p className="text-sm text-gray-500">Separate skills with commas</p>
             </div>
 
             <div className="space-y-2">
@@ -311,6 +628,7 @@ export default function JobSeekerProfilePage() {
                 placeholder="e.g. BS in Computer Science, Stanford University"
                 defaultValue={profile?.education || ""}
                 disabled={loading}
+                required
               />
             </div>
 
@@ -323,6 +641,7 @@ export default function JobSeekerProfilePage() {
                 rows={5}
                 defaultValue={profile?.bio || ""}
                 disabled={loading}
+                required
               />
             </div>
 
@@ -352,7 +671,7 @@ export default function JobSeekerProfilePage() {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Saving..." : "Update Profile"}
               </Button>
               <Button
                 type="button"

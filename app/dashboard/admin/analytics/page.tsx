@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatCurrency, formatDateTime } from "@/lib/utils"
-import { TrendingUp, Users, Briefcase, IndianRupee, FileText } from "lucide-react"
+import { TrendingUp, Users, Briefcase, Coins, FileText } from "lucide-react"
 
 async function getAnalytics() {
   const { prisma } = await import("@/lib/prisma")
@@ -177,7 +177,7 @@ export default async function AnalyticsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <IndianRupee className="h-4 w-4 text-gray-600" />
+            <Coins className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(analytics.monthlyRevenue)}</div>

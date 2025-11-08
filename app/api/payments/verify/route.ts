@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { verifyRazorpaySignature } from "@/lib/razorpay"
 import { sendEmail, emailTemplates } from "@/lib/email"
@@ -58,55 +59,124 @@ export async function POST(req: Request) {
     const orderData = await razorpayOrder.json()
     const { jobId, jobSeekerId, coverLetter } = orderData.notes
 
-    // Create the application only after successful payment verification
-    const application = await prisma.application.create({
-      data: {
-        jobId,
-        jobSeekerId,
-        coverLetter: coverLetter || "",
-        status: "SUBMITTED",
-      },
-      include: {
-        job: {
+    let application
+    let updatedPayment
+
+    try {
+      const transactionResult = await prisma.$transaction(async (tx) => {
+        const jobRecord = await tx.job.findUnique({
+          where: { id: jobId },
+          select: { id: true, positions: true },
+        })
+
+        if (!jobRecord) {
+          throw new Error("JOB_NOT_FOUND")
+        }
+
+        if (jobRecord.positions !== null) {
+          try {
+            await tx.job.update({
+              where: {
+                id: jobId,
+                positions: {
+                  gt: 0,
+                },
+              },
+              data: {
+                positions: {
+                  decrement: 1,
+                },
+              },
+            })
+          } catch (err) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+              throw new Error("NO_POSITIONS")
+            }
+            throw err
+          }
+        }
+
+        const createdApplication = await tx.application.create({
+          data: {
+            jobId,
+            jobSeekerId,
+            coverLetter: coverLetter || "",
+            status: "SUBMITTED",
+          },
           include: {
-            company: {
+            job: {
+              include: {
+                company: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
+            jobSeeker: {
               include: {
                 user: true,
               },
             },
           },
-        },
-        jobSeeker: {
-          include: {
-            user: true,
+        })
+
+        const paymentRecord = await tx.payment.update({
+          where: { id: payment.id },
+          data: {
+            applicationId: createdApplication.id,
+            status: "COMPLETED",
+            razorpayOrderId: razorpay_order_id,
+            razorpayPaymentId: razorpay_payment_id,
+            razorpaySignature: razorpay_signature,
           },
-        },
-      },
-    })
+        })
 
-    // Update payment with real application ID
-    const updatedPayment = await prisma.payment.update({
-      where: { id: payment.id },
-      data: {
-        applicationId: application.id,
-        status: "COMPLETED",
-        razorpayOrderId: razorpay_order_id,
-        razorpayPaymentId: razorpay_payment_id,
-        razorpaySignature: razorpay_signature,
-      },
-    })
+        const guaranteeExpiresAt = new Date()
+        guaranteeExpiresAt.setDate(guaranteeExpiresAt.getDate() + createdApplication.job.guaranteePeriod)
 
-    // Create guarantee record
-    const guaranteeExpiresAt = new Date()
-    guaranteeExpiresAt.setDate(guaranteeExpiresAt.getDate() + application.job.guaranteePeriod)
+        await tx.guarantee.create({
+          data: {
+            applicationId: createdApplication.id,
+            terms: createdApplication.job.guaranteeTerms,
+            expiresAt: guaranteeExpiresAt,
+          },
+        })
 
-    await prisma.guarantee.create({
-      data: {
-        applicationId: application.id,
-        terms: application.job.guaranteeTerms,
-        expiresAt: guaranteeExpiresAt,
-      },
-    })
+        return {
+          application: createdApplication,
+          payment: paymentRecord,
+        }
+      })
+
+      application = transactionResult.application
+      updatedPayment = transactionResult.payment
+    } catch (transactionError: any) {
+      if (transactionError?.message === "JOB_NOT_FOUND") {
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: {
+            status: "FAILED",
+          },
+        })
+        return NextResponse.json({ error: "Job no longer exists" }, { status: 404 })
+      }
+
+      if (transactionError?.message === "NO_POSITIONS") {
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: {
+            status: "FAILED",
+          },
+        })
+        return NextResponse.json(
+          { error: "No positions available for this job" },
+          { status: 400 }
+        )
+      }
+
+      throw transactionError
+    }
 
     // Send payment confirmation email to job seeker
     await sendEmail({

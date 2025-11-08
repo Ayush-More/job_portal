@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { applicationSchema } from "@/lib/validations"
@@ -116,33 +117,70 @@ export async function POST(req: Request) {
       )
     }
 
-    // Get job details
-    const job = await prisma.job.findUnique({
-      where: { id: jobId },
-      include: {
-        company: {
-          include: {
-            user: true,
+    let application
+
+    try {
+      application = await prisma.$transaction(async (tx) => {
+        const jobRecord = await tx.job.findUnique({
+          where: { id: jobId },
+          select: {
+            id: true,
+            positions: true,
           },
-        },
-      },
-    })
+        })
 
-    if (!job) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 })
+        if (!jobRecord) {
+          throw new Error("JOB_NOT_FOUND")
+        }
+
+        if (jobRecord.positions !== null) {
+          try {
+            await tx.job.update({
+              where: {
+                id: jobId,
+                positions: {
+                  gt: 0,
+                },
+              },
+              data: {
+                positions: {
+                  decrement: 1,
+                },
+              },
+            })
+          } catch (err) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+              throw new Error("NO_POSITIONS")
+            }
+            throw err
+          }
+        }
+
+        return tx.application.create({
+          data: {
+            jobId,
+            jobSeekerId: jobSeeker.id,
+            ...validatedData,
+          },
+          include: {
+            job: true,
+          },
+        })
+      })
+    } catch (transactionError: any) {
+      if (transactionError?.message === "JOB_NOT_FOUND") {
+        return NextResponse.json({ error: "Job not found" }, { status: 404 })
+      }
+
+      if (transactionError?.message === "NO_POSITIONS") {
+        return NextResponse.json(
+          { error: "No positions available for this job" },
+          { status: 400 }
+        )
+      }
+
+      throw transactionError
     }
-
-    // Create application
-    const application = await prisma.application.create({
-      data: {
-        jobId,
-        jobSeekerId: jobSeeker.id,
-        ...validatedData,
-      },
-      include: {
-        job: true,
-      },
-    })
 
     // Note: Payment is created via separate payment endpoint
 

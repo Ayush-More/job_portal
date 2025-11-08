@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Shield, IndianRupee, Users, Briefcase, TrendingUp, ArrowRight, Zap, Heart, Star, Sparkles, Rocket } from "lucide-react"
+import { CheckCircle, Shield, Coins, Users, Briefcase, TrendingUp, ArrowRight, Zap, Heart, Star, Sparkles, Rocket } from "lucide-react"
 
 export default function Home() {
   return (
@@ -117,7 +117,7 @@ export default function Home() {
                 delay: "stagger-2"
               },
               {
-                icon: IndianRupee,
+                icon: Coins,
                 title: "Fair Pricing",
                 description: "Transparent application fees ensure both parties are invested in success.",
                 color: "from-[var(--secondary-600)] to-[var(--secondary-500)]",

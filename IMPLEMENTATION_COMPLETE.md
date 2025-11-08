@@ -81,7 +81,7 @@
 - ✅ User, job, application, and revenue metrics
 - ✅ Quick access navigation to all admin functions
 - ✅ Pending actions overview
-- ✅ Revenue tracking in INR
+- ✅ Revenue tracking in AED
 
 #### **User Management** (`app/dashboard/admin/users/page.tsx`)
 - ✅ Complete user listing with details
@@ -133,7 +133,7 @@
 # Razorpay Configuration
 RAZORPAY_KEY_ID="rzp_test_RNx53kIlaCrWb0"
 RAZORPAY_KEY_SECRET="Rjovvz5Pxo5osDOY2L93OFBe"
-RAZORPAY_CURRENCY="INR"
+RAZORPAY_CURRENCY="AED"
 RAZORPAY_CALLBACK_URL="http://localhost:8082/payment/callback"
 RAZORPAY_WEBHOOK_SECRET="Rjovvz5Pxo5osDOY2L93OFBe"
 RAZORPAY_SERVICE_FEE_PERCENTAGE="2.0"

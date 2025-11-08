@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, IndianRupee, FileText, AlertCircle } from "lucide-react"
+import { Users, Briefcase, Coins, FileText, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { formatCurrency } from "@/lib/utils"
 
 async function getStats() {
   // Use direct database query for SSR instead of fetch
@@ -61,7 +62,7 @@ async function getStats() {
     },
     revenue: {
       total: totalRevenue,
-      formatted: `₹${(totalRevenue / 100).toFixed(2)}`,
+      formatted: formatCurrency(totalRevenue),
     },
   }
 }
@@ -123,10 +124,10 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-            <IndianRupee className="h-4 w-4 text-gray-600" />
+            <Coins className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.revenue?.formatted || "₹0.00"}</div>
+            <div className="text-2xl font-bold">{stats.revenue?.formatted || formatCurrency(0)}</div>
             <p className="text-xs text-gray-500">Total platform revenue</p>
           </CardContent>
         </Card>
@@ -160,7 +161,7 @@ export default async function AdminDashboard() {
               </Link>
               <Link href="/dashboard/admin/analytics">
                 <Button className="w-full" variant="outline">
-                  <IndianRupee className="mr-2 h-4 w-4" />
+                  <Coins className="mr-2 h-4 w-4" />
                   View Analytics
                 </Button>
               </Link>

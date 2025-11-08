@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader } from "@/components/ui/loader"
 import { useToast } from "@/components/ui/toast"
-import { IndianRupee } from "lucide-react"
+import { Coins } from "lucide-react"
 
 export default function ApplicationFeeManager() {
   const [fee, setFee] = useState<number>(0)
@@ -64,7 +64,7 @@ export default function ApplicationFeeManager() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <IndianRupee className="h-5 w-5" />
+            <Coins className="h-5 w-5" />
             Application Fee Management
           </CardTitle>
           <CardDescription>
@@ -84,7 +84,7 @@ export default function ApplicationFeeManager() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <IndianRupee className="h-5 w-5" />
+          <Coins className="h-5 w-5" />
           Application Fee Management
         </CardTitle>
         <CardDescription>
@@ -95,9 +95,9 @@ export default function ApplicationFeeManager() {
         {loading && <Loader fullScreen />}
         <form onSubmit={handleUpdateFee} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="fee">Application Fee (INR)</Label>
+            <Label htmlFor="fee">Application Fee (AED)</Label>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">₹</span>
+              <span className="text-2xl font-bold">AED</span>
               <Input
                 id="fee"
                 type="number"
@@ -110,7 +110,7 @@ export default function ApplicationFeeManager() {
               />
             </div>
             <p className="text-sm text-gray-500">
-              Minimum fee: ₹1.00. This amount will be charged to job seekers when they apply to any job.
+              Minimum fee: AED 1.00. This amount will be charged to job seekers when they apply to any job.
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export default function ApplicationFeeManager() {
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <h4 className="font-semibold text-blue-900 mb-2">Current Fee Information</h4>
           <div className="text-sm text-blue-800 space-y-1">
-            <p><strong>Amount:</strong> ₹{(fee / 100).toFixed(2)} INR</p>
+            <p><strong>Amount:</strong> AED {(fee / 100).toFixed(2)}</p>
             <p><strong>Applies to:</strong> All job postings</p>
             <p><strong>Revenue goes to:</strong> Admin</p>
             <p><strong>Companies:</strong> No financial involvement</p>

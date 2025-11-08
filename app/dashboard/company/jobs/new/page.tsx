@@ -148,7 +148,7 @@ export default function NewJobPage() {
             <div className="grid gap-4 md:grid-cols-2">
              
               <div className="space-y-2">
-                <Label htmlFor="salaryMin">Minimum Salary (INR)</Label>
+                <Label htmlFor="salaryMin">Minimum Salary (AED)</Label>
                 <Input
                   id="salaryMin"
                   name="salaryMin"
@@ -159,7 +159,7 @@ export default function NewJobPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="salaryMax">Maximum Salary (INR)</Label>
+                <Label htmlFor="salaryMax">Maximum Salary (AED)</Label>
                 <Input
                   id="salaryMax"
                   name="salaryMax"

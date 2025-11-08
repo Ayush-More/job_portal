@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Briefcase, Users, IndianRupee, Eye } from "lucide-react"
+import { Briefcase, Users, Eye } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 
 export default async function CompanyDashboard() {
@@ -52,7 +52,7 @@ export default async function CompanyDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl text-[var(--brand-600)] font-bold">Welcome back, {company.companyName}!</h1>
+        <h1 className="text-3xl text-[var(--brand-600)] font-bold">Welcome back {company.companyName}</h1>
         <p className="text-gray-600">Manage your job postings and applications</p>
       </div>
 
