@@ -14,6 +14,9 @@ export default function CategoriesClient() {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [submitting, setSubmitting] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editName, setEditName] = useState("")
+  const [editDescription, setEditDescription] = useState("")
 
   const load = async () => {
     try {
@@ -71,18 +74,38 @@ export default function CategoriesClient() {
     }
   }
 
-  const onRename = async (id: string, currentName: string) => {
-    const next = prompt("Update category name", currentName)
-    if (!next || next.trim() === currentName) return
+  const onStartEdit = (category: any) => {
+    setEditingId(category.id)
+    setEditName(category.name)
+    setEditDescription(category.description || "")
+    setError(null)
+  }
+
+  const onCancelEdit = () => {
+    setEditingId(null)
+    setEditName("")
+    setEditDescription("")
+    setError(null)
+  }
+
+  const onSaveEdit = async (id: string) => {
+    if (!editName.trim()) {
+      setError("Name is required")
+      return
+    }
     try {
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: next.trim() }),
+        body: JSON.stringify({
+          name: editName.trim(),
+          description: editDescription.trim() || undefined,
+        }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data?.error || "Failed to rename category")
+      if (!res.ok) throw new Error(data?.error || "Failed to update category")
       await load()
+      onCancelEdit()
     } catch (e: any) {
       setError(e.message)
     }
@@ -140,27 +163,60 @@ export default function CategoriesClient() {
           ) : (
             <div className="space-y-4">
               {categories.map((c) => (
-                <div key={c.id} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{c.name}</span>
-                      {c.active ? (
-                        <Badge className="bg-green-100 text-green-800">Active</Badge>
-                      ) : (
-                        <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
-                      )}
+                <div key={c.id} className="p-4 border rounded-lg">
+                  {editingId === c.id ? (
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <Label htmlFor={`edit-name-${c.id}`}>Name</Label>
+                        <Input
+                          id={`edit-name-${c.id}`}
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          placeholder="Category name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`edit-desc-${c.id}`}>Description (optional)</Label>
+                        <Input
+                          id={`edit-desc-${c.id}`}
+                          value={editDescription}
+                          onChange={(e) => setEditDescription(e.target.value)}
+                          placeholder="Short description"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={() => onSaveEdit(c.id)}>
+                          Save
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={onCancelEdit}>
+                          Cancel
+                        </Button>
+                      </div>
                     </div>
-                    {c.description && (
-                      <p className="text-sm text-gray-600 mt-1">{c.description}</p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => onToggleActive(c.id, c.active)}>
-                      {c.active ? "Deactivate" : "Activate"}
-                    </Button>
-                    <Button variant="outline" onClick={() => onRename(c.id, c.name)}>Rename</Button>
-                    <Button variant="destructive" onClick={() => onDelete(c.id)}>Delete</Button>
-                  </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{c.name}</span>
+                          {c.active ? (
+                            <Badge className="bg-green-100 text-green-800">Active</Badge>
+                          ) : (
+                            <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
+                          )}
+                        </div>
+                        {c.description && (
+                          <p className="text-sm text-gray-600 mt-1">{c.description}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={() => onToggleActive(c.id, c.active)}>
+                          {c.active ? "Deactivate" : "Activate"}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => onStartEdit(c)}>Edit</Button>
+                        <Button variant="destructive" size="sm" onClick={() => onDelete(c.id)}>Delete</Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

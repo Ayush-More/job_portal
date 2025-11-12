@@ -25,6 +25,7 @@ export default function JobDetailPage() {
   const [job, setJob] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [applying, setApplying] = useState(false)
+  const [verifyingPayment, setVerifyingPayment] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [applicationFee, setApplicationFee] = useState<number>(1000) // Default AED 10.00
@@ -103,6 +104,7 @@ export default function JobDetailPage() {
 
       if (!paymentResponse.ok) {
         addToast("Failed to initialize payment", "error")
+        setApplying(false)
         return
       }
 
@@ -111,6 +113,7 @@ export default function JobDetailPage() {
       // @ts-ignore
       if (typeof window === "undefined" || !window.Razorpay) {
         addToast("Payment system not available", "error")
+        setApplying(false)
         return
       }
 
@@ -131,6 +134,7 @@ export default function JobDetailPage() {
           emi: true,
         },
         handler: async function (response: any) {
+          setVerifyingPayment(true)
           try {
             const verifyRes = await fetch("/api/payments/verify", {
               method: "POST",
@@ -154,6 +158,8 @@ export default function JobDetailPage() {
             setShowApplyForm(true)
           } catch (e) {
             addToast((e as Error).message, "error")
+          } finally {
+            setVerifyingPayment(false)
           }
         },
         theme: { color: "#2563eb" },
@@ -161,6 +167,13 @@ export default function JobDetailPage() {
 
       // @ts-ignore
       const rzp = new window.Razorpay(options)
+      
+      // Handle modal dismissal
+      rzp.on('payment.failed', function (response: any) {
+        setVerifyingPayment(false)
+        addToast("Payment failed. Please try again.", "error")
+      })
+      
       rzp.open()
     } catch (error) {
       console.error("Application error:", error)
@@ -211,7 +224,25 @@ export default function JobDetailPage() {
         src="https://checkout.razorpay.com/v1/checkout.js"
         strategy="lazyOnload"
       />
-      {applying && <Loader fullScreen />}
+      {(applying || verifyingPayment) && (
+        <div className="fixed inset-0 bg-white bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <Loader size="lg" />
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {verifyingPayment ? "Processing Payment..." : "Preparing Payment..."}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {verifyingPayment 
+                    ? "Please wait while we verify your payment and submit your application." 
+                    : "Opening payment gateway..."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-4">
           <Link href="/jobs">

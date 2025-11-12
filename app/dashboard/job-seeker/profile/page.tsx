@@ -24,12 +24,32 @@ export default function JobSeekerProfilePage() {
   const [qualificationStatus, setQualificationStatus] = useState<"QUALIFIED" | "NON_QUALIFIED" | "">("")
   const [isFresher, setIsFresher] = useState<boolean | undefined>(undefined)
   const [maritalStatus, setMaritalStatus] = useState<"MARRIED" | "UNMARRIED" | "">("")
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
 
   useEffect(() => {
     if (session?.user.role !== "JOB_SEEKER") {
       router.push("/dashboard")
     }
   }, [session, router])
+
+  // Load categories
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories", { cache: "no-store" })
+        const data = await res.json()
+        if (res.ok) {
+          setCategories((data?.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        }
+      } catch (e) {
+        // ignore, leave categories empty
+      } finally {
+        setLoadingCategories(false)
+      }
+    }
+    loadCategories()
+  }, [])
 
   // Fetch existing profile data
   useEffect(() => {
@@ -101,7 +121,6 @@ export default function JobSeekerProfilePage() {
         district: getStringValue("district"),
         village: getStringValue("village"),
         maritalStatus: maritalStatus || undefined,
-        location: getStringValue("location"),
         skills: skills.split(",").map(s => s.trim()).filter(Boolean),
         experience: parseInt(formData.get("experience") as string) || 0,
         education: getStringValue("education"),
@@ -278,14 +297,43 @@ export default function JobSeekerProfilePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="jobCategory">Job Category</Label>
-                <Input
-                  id="jobCategory"
-                  name="jobCategory"
-                  placeholder="e.g. IT, Finance, Marketing"
-                  defaultValue={profile?.jobCategory || ""}
-                  disabled={loading}
-                  required
-                />
+                {loadingCategories ? (
+                  <div className="flex h-10 w-full items-center rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500">
+                    Loading categories...
+                  </div>
+                ) : categories.length === 0 ? (
+                  <div className="space-y-2">
+                    <div className="flex h-10 w-full items-center rounded-md border border-yellow-300 bg-yellow-50 px-3 py-2 text-sm text-yellow-600">
+                      No categories available
+                    </div>
+                    <p className="text-xs text-yellow-600">
+                      Categories will appear here once they are created by administrators.
+                    </p>
+                    <Input
+                      id="jobCategory"
+                      name="jobCategory"
+                      placeholder="Enter category manually"
+                      defaultValue={profile?.jobCategory || ""}
+                      disabled={loading}
+                    />
+                  </div>
+                ) : (
+                  <select
+                    id="jobCategory"
+                    name="jobCategory"
+                    required
+                    disabled={loading}
+                    defaultValue={profile?.jobCategory || ""}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
 
@@ -316,30 +364,17 @@ export default function JobSeekerProfilePage() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="contactEmail">Gmail ID</Label>
-                <Input
-                  id="contactEmail"
-                  name="contactEmail"
-                  type="email"
-                  placeholder="example@gmail.com"
-                  defaultValue={profile?.contactEmail || ""}
-                  disabled={loading}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  name="location"
-                  placeholder="e.g. San Francisco, CA"
-                  defaultValue={profile?.location || ""}
-                  disabled={loading}
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="contactEmail">Gmail ID</Label>
+              <Input
+                id="contactEmail"
+                name="contactEmail"
+                type="email"
+                placeholder="example@gmail.com"
+                defaultValue={profile?.contactEmail || ""}
+                disabled={loading}
+                required
+              />
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
@@ -366,11 +401,11 @@ export default function JobSeekerProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="village">Gaon (Village) Name</Label>
+                <Label htmlFor="village">Permanent Address</Label>
                 <Input
                   id="village"
                   name="village"
-                  placeholder="Village"
+                  placeholder="Permanent Address"
                   defaultValue={profile?.village || ""}
                   disabled={loading}
                   required

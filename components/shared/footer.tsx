@@ -100,12 +100,12 @@ export function Footer() {
                   href="https://www.google.com/maps/search/?api=1&query=Al+Nahda+Ittihad+Placement+Dubai"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block overflow-hidden rounded-lg  shadow-sm transition-transform duration-200 hover:scale-[1.02]"
+                  className="block overflow-hidden rounded-lg shadow-sm transition-transform duration-200 hover:scale-[1.02]"
                 >
                   <img
                     src="/google map.png"
                     alt="Map showing the location of Al Nahda Ittihad Placement in Dubai"
-                    className="w-full h-auto max-w-[190px] mx-auto rounded-md"
+                    className="w-full h-auto md:max-w-[190px] md:mx-auto rounded-md"
                     loading="lazy"
                   />
                 </a>

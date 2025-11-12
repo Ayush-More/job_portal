@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/toast"
 export default function NewJobPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { addToast } = useToast()
   
   const LOCATIONS = ["Dubai", "Sharjha", "Abu Dhabi", "Rasalkhema"]
@@ -40,6 +41,7 @@ export default function NewJobPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
+    setError(null)
 
     const formData = new FormData(e.currentTarget)
     const positionsValue = formData.get("positions") as string
@@ -67,14 +69,18 @@ export default function NewJobPage() {
 
       if (!response.ok) {
         const result = await response.json()
-        addToast(result.error || "Failed to create job posting", "error")
+        const errorMessage = result.error || "Failed to create job posting"
+        setError(errorMessage)
+        addToast(errorMessage, "error")
         return
       }
 
       addToast("Job posting created successfully!", "success")
       router.push("/dashboard/company")
     } catch (error) {
-      addToast("Something went wrong. Please try again.", "error")
+      const errorMessage = "Something went wrong. Please try again."
+      setError(errorMessage)
+      addToast(errorMessage, "error")
     } finally {
       setLoading(false)
     }
@@ -112,20 +118,37 @@ export default function NewJobPage() {
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <select
-                id="category"
-                name="category"
-                required
-                disabled={loading || loadingCategories}
-                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
-                defaultValue=""
-              >
-                <option value="" disabled>Select a category</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
-                ))}
-              </select>
-              <p className="text-sm text-gray-500">Categories are managed by admins and loaded dynamically.</p>
+              {loadingCategories ? (
+                <div className="flex h-10 w-full items-center rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500">
+                  Loading categories...
+                </div>
+              ) : categories.length === 0 ? (
+                <div className="space-y-2">
+                  <div className="flex h-10 w-full items-center rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-600">
+                    No categories available
+                  </div>
+                  <p className="text-sm text-red-600">
+                    Categories must be created by an administrator before you can post a job. Please contact support or wait for categories to be added.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <select
+                    id="category"
+                    name="category"
+                    required
+                    disabled={loading}
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select a category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
+                  <p className="text-sm text-gray-500">Categories are managed by admins and loaded dynamically.</p>
+                </>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -258,8 +281,14 @@ export default function NewJobPage() {
               </div>
             </div>
 
+            {error && (
+              <div className="rounded-md bg-red-50 border border-red-200 p-4">
+                <p className="text-sm text-red-600 font-medium">{error}</p>
+              </div>
+            )}
+
             <div className="flex gap-4">
-              <Button type="submit" disabled={loading} className="flex-1">
+              <Button type="submit" disabled={loading || loadingCategories || categories.length === 0} className="flex-1">
                 {loading ? "Creating Job..." : "Create Job Posting"}
               </Button>
               <Button

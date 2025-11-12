@@ -128,7 +128,6 @@ model JobSeeker {
   id              String   @id @default(cuid())
   userId          String   @unique
   phone           String?
-  location        String?
   resume          String?  // URL to resume file
   skills          String[] // Array of skills
   experience      Int?     // Years of experience
@@ -193,7 +192,7 @@ model Payment {
   id              String        @id @default(cuid())
   applicationId   String?       @unique // Can be null during payment process
   amount          Int           // Amount in cents
-  currency        String        @default("AED")
+  currency        String        @default("INR")
   status          PaymentStatus @default(PENDING)
   stripePaymentId String?       @unique
   stripeCustomerId String?

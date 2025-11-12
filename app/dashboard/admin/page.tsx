@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Coins, FileText, AlertCircle } from "lucide-react"
+import { Users, Briefcase, Coins, FileText, AlertCircle, Tags } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/lib/utils"
@@ -151,6 +151,12 @@ export default async function AdminDashboard() {
                 <Button className="w-full" variant="outline">
                   <Briefcase className="mr-2 h-4 w-4" />
                   Manage Jobs
+                </Button>
+              </Link>
+              <Link href="/dashboard/admin/categories">
+                <Button className="w-full" variant="outline">
+                  <Tags className="mr-2 h-4 w-4" />
+                  Manage Categories
                 </Button>
               </Link>
               <Link href="/dashboard/admin/refunds">

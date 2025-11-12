@@ -27,6 +27,6 @@ export function verifyRazorpaySignature(
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-AE", {
     style: "currency",
-    currency: "AED",
+    currency: "INR",
   }).format(amount / 100)
 }

@@ -9,7 +9,7 @@ export function formatCurrency(amount?: number | null) {
   const value = typeof amount === "number" ? amount : 0
   return new Intl.NumberFormat("en-AE", {
     style: "currency",
-    currency: "AED",
+    currency: "INR",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value / 100)

@@ -27,7 +27,6 @@ export const companyProfileSchema = z.object({
 // Job Seeker Validations
 export const jobSeekerProfileSchema = z.object({
   phone: z.string().optional(),
-  location: z.string().optional(),
   skills: z.array(z.string()).optional(),
   experience: z.number().min(0).optional(),
   education: z.string().optional(),

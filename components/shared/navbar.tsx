@@ -22,7 +22,8 @@ import {
   ChevronDown,
   MapPin,
   Mail,
-  Phone
+  Phone,
+  Settings
 } from "lucide-react"
 
 declare global {
@@ -163,7 +164,7 @@ export function Navbar() {
       className="pointer-events-none absolute -left-[9999px] -top-[9999px] opacity-0"
       aria-hidden="true"
     />
-    <nav className="sticky top-0 z-[10000] border-b-2 border-[var(--brand-200)] bg-gradient-to-r from-white/80 via-[var(--brand-50)]/80 to-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.7)]">
+    <nav className="sticky top-0 z-[10000] border-b-2 border-[var(--brand-200)] dark:border-[var(--border)] bg-gradient-to-r from-white/80 via-[var(--brand-50)]/80 to-white/80 dark:from-[var(--surface)]/90 dark:via-[var(--surface-muted)]/90 dark:to-[var(--surface)]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.7)] dark:supports-[backdrop-filter]:bg-[color:rgba(26,31,58,0.8)]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="group flex items-center space-x-4 hover:opacity-80 transition-all duration-200">
@@ -199,6 +200,13 @@ export function Navbar() {
                   </Button>
                 </Link>
                 
+                <Link href="/profile/settings">
+                  <Button variant="ghost" className="rounded-[var(--radius-md)]">
+                    <Settings className="mr-2 h-4 w-4" />
+                    My Profile
+                  </Button>
+                </Link>
+                
                 <Button
                   variant="outline"
                   className="rounded-[var(--radius-md)] border-[var(--brand-300)] hover:border-[var(--brand-500)]"
@@ -226,7 +234,7 @@ export function Navbar() {
           {/* Mobile Menu Button - Show on mobile for all users, and on desktop for company users */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`${isCompanyUser ? "lg:hidden" : "md:hidden"} p-2 rounded-md text-[var(--brand-600)] hover:bg-[var(--brand-50)] transition-colors`}
+            className={`${isCompanyUser ? "lg:hidden" : "md:hidden"} p-2 rounded-md text-[var(--brand-600)] dark:text-[var(--brand-400)] hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -253,13 +261,13 @@ export function Navbar() {
 
       {/* Sidebar */}
       <div
-        className={`absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        className={`absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[var(--surface)] shadow-2xl transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[var(--brand-200)]">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--brand-200)] dark:border-[var(--border)]">
             <div className="flex items-center space-x-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-white">
                 <Image
@@ -277,7 +285,7 @@ export function Navbar() {
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[var(--surface-muted)] transition-colors"
               aria-label="Close menu"
             >
               <X className="h-5 w-5" />
@@ -290,26 +298,38 @@ export function Navbar() {
             <Link
               href="/"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
             >
               <Home className="mr-3 h-5 w-5" />
               Home
             </Link>
-            {/* Profile */}
+            {/* Dashboard */}
             <Link
               href={getDashboardPath()}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
             >
               <User className="mr-3 h-5 w-5" />
-              Profile
+              Dashboard
             </Link>
+
+            {/* My Profile - Account Settings */}
+            {session && (
+              <Link
+                href="/profile/settings"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
+              >
+                <Settings className="mr-3 h-5 w-5" />
+                My Profile
+              </Link>
+            )}
 
             {/* Language switcher */}
             <div className="space-y-1">
               <button
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <span className="flex items-center">
                   <Globe className="mr-3 h-5 w-5" />
@@ -318,13 +338,13 @@ export function Navbar() {
                 <ChevronDown className={`h-4 w-4 transition-transform ${isLanguageOpen ? "rotate-180" : ""}`} />
               </button>
               {isLanguageOpen && (
-                <div className="ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+                <div className="ml-4 space-y-1 border-l-2 border-gray-200 dark:border-[var(--border)] pl-4">
                   <button
                     onClick={() => {
                       handleLanguageSwitch("en")
                       setIsLanguageOpen(false)
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:text-[var(--brand-600)] hover:bg-gray-50 rounded transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:text-[var(--brand-600)] hover:bg-gray-50 dark:hover:bg-[var(--surface-muted)] rounded transition-colors"
                   >
                     English
                   </button>
@@ -333,7 +353,7 @@ export function Navbar() {
                       handleLanguageSwitch("ar")
                       setIsLanguageOpen(false)
                     }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:text-[var(--brand-600)] hover:bg-gray-50 rounded transition-colors"
+                    className="w-full px-4 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:text-[var(--brand-600)] hover:bg-gray-50 dark:hover:bg-[var(--surface-muted)] rounded transition-colors"
                   >
                     العربية
                   </button>
@@ -345,7 +365,7 @@ export function Navbar() {
             <div className="space-y-1">
               <button
                 onClick={() => setIsIndustryOpen(!isIndustryOpen)}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <div className="flex items-center">
                   <Building2 className="mr-3 h-5 w-5" />
@@ -354,18 +374,18 @@ export function Navbar() {
                 <ChevronDown className={`h-4 w-4 transition-transform ${isIndustryOpen ? "rotate-180" : ""}`} />
               </button>
               {isIndustryOpen && (
-                <div className="ml-4 space-y-1 border-l-2 border-gray-200 pl-4">
+                <div className="ml-4 space-y-1 border-l-2 border-gray-200 dark:border-[var(--border)] pl-4">
                   {loadingCategories ? (
-                    <div className="px-4 py-2 text-sm text-gray-500">Loading...</div>
+                    <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Loading...</div>
                   ) : categories.length === 0 ? (
-                    <div className="px-4 py-2 text-sm text-gray-500">No categories available</div>
+                    <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">No categories available</div>
                   ) : (
                     categories.map((category) => (
                       <Link
                         key={category.id}
                         href={`/jobs?category=${encodeURIComponent(category.name)}`}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-600 hover:text-[var(--brand-600)] hover:bg-gray-50 rounded transition-colors"
+                        className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[var(--brand-600)] hover:bg-gray-50 dark:hover:bg-[var(--surface-muted)] rounded transition-colors"
                       >
                         {category.name}
                       </Link>
@@ -380,7 +400,7 @@ export function Navbar() {
               <Link
                 href="/dashboard/company/jobs/new"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <UserPlus className="mr-3 h-5 w-5" />
                 Hire
@@ -391,7 +411,7 @@ export function Navbar() {
             <Link
               href="/jobs"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
             >
               <Briefcase className="mr-3 h-5 w-5" />
               Find work
@@ -403,7 +423,7 @@ export function Navbar() {
                 e.preventDefault()
                 handleWhatsAppClick()
               }}
-              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium text-left"
+              className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium text-left"
             >
               <HelpCircle className="mr-3 h-5 w-5" />
               Help center
@@ -414,7 +434,7 @@ export function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <LogIn className="mr-3 h-5 w-5" />
                 Login
@@ -426,7 +446,7 @@ export function Navbar() {
               <Link
                 href="/register"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <UserCheck className="mr-3 h-5 w-5" />
                 Registration
@@ -438,7 +458,7 @@ export function Navbar() {
               <Link
                 href="/register?role=COMPANY"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <Building2 className="mr-3 h-5 w-5" />
                 Company registration
@@ -452,7 +472,7 @@ export function Navbar() {
                   setIsMobileMenuOpen(false)
                   signOut({ callbackUrl: "/" })
                 }}
-                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-[var(--brand-50)] transition-colors font-medium"
+                className="flex items-center w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-[var(--brand-50)] dark:hover:bg-[var(--surface-muted)] transition-colors font-medium"
               >
                 <LogOut className="mr-3 h-5 w-5" />
                 Sign Out
@@ -460,11 +480,11 @@ export function Navbar() {
             )}
           </div>
 
-          <div className="border-t border-[var(--brand-200)] bg-[var(--brand-50)]/40 px-4 py-4 space-y-1">
+          <div className="border-t border-[var(--brand-200)] dark:border-[var(--border)] bg-[var(--brand-50)]/40 dark:bg-[var(--surface-muted)]/40 px-4 py-4 space-y-1">
             {/* <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--brand-700)]">
               Contact
             </h3> */}
-            <div className="space-y-3 text-xs text-gray-600 leading-relaxed">
+            <div className="space-y-3 text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
               <div className="flex items-start gap-1">
                 <MapPin className="mt-0.5 h-4 w-4 text-[var(--brand-600)] shrink-0" />
                 <div className="space-y-0.5">

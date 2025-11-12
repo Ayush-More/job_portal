@@ -17,7 +17,6 @@ export async function GET() {
         id: true,
         userId: true,
         phone: true,
-        location: true,
         skills: true,
         experience: true,
         education: true,
@@ -61,7 +60,6 @@ export async function PATCH(req: Request) {
     // Include all fields including the new ones
     const {
       phone,
-      location,
       skills,
       experience,
       education,
@@ -73,7 +71,6 @@ export async function PATCH(req: Request) {
 
     const safeData: any = {
       ...(phone !== undefined ? { phone } : {}),
-      ...(location !== undefined ? { location } : {}),
       ...(skills !== undefined ? { skills } : {}),
       ...(experience !== undefined ? { experience } : {}),
       ...(education !== undefined ? { education } : {}),
@@ -97,7 +94,6 @@ export async function PATCH(req: Request) {
             id: true,
             userId: true,
             phone: true,
-            location: true,
             skills: true,
             experience: true,
             education: true,
@@ -116,7 +112,6 @@ export async function PATCH(req: Request) {
             id: true,
             userId: true,
             phone: true,
-            location: true,
             skills: true,
             experience: true,
             education: true,

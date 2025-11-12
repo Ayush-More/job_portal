@@ -12,6 +12,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
+    "create-admin": "tsx scripts/create-admin.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "@types/react-dom": "^19",
     "prisma": "^6.17.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

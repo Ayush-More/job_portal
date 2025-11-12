@@ -30,11 +30,13 @@ export default function JobsPage() {
       try {
         const res = await fetch("/api/categories", { cache: "no-store" })
         const data = await res.json()
-        if (res.ok) {
-          setCategories((data?.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        if (res.ok && data?.categories) {
+          setCategories((data.categories || []).map((c: any) => ({ id: c.id, name: c.name })))
+        } else {
+          console.error("Failed to load categories:", data?.error)
         }
       } catch (e) {
-        // ignore
+        console.error("Error loading categories:", e)
       }
     }
     loadCategories()
@@ -130,14 +132,21 @@ export default function JobsPage() {
                     className="w-full px-3 py-2 border-2 border-[var(--brand-200)] focus:border-[var(--brand-500)] rounded-md bg-white text-[var(--heading)] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--brand-200)]"
                   >
                     <option value="">All Categories</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.name} className="text-[var(--heading)]">
-                        {c.name}
-                      </option>
-                    ))}
+                    {categories.length > 0 ? (
+                      categories.map((c) => (
+                        <option key={c.id} value={c.name} className="text-[var(--heading)]">
+                          {c.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>No categories available</option>
+                    )}
                   </select>
                   <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-[var(--muted)] pointer-events-none" />
                 </div>
+                {categories.length === 0 && (
+                  <p className="text-xs text-gray-500">Categories will appear here once they are created by administrators.</p>
+                )}
               </div>
             </div>
           </CardContent>
@@ -181,7 +190,7 @@ export default function JobsPage() {
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
                   <CardHeader>
-                    <CardTitle className="line-clamp-2 text-[var(--heading)] text-lg">{job.title}</CardTitle>
+                    <CardTitle className="line-clamp-2 text-[var(--heading)] text-lg">{job.category}</CardTitle>
                     <CardDescription className="line-clamp-1 text-[var(--muted)]">
                       {job.company.companyName}
                     </CardDescription>
@@ -194,10 +203,6 @@ export default function JobsPage() {
                       <div className="flex items-center text-sm text-[var(--muted)]">
                         <MapPin className="mr-2 h-4 w-4 text-[var(--brand-600)]" />
                         {job.location}
-                      </div>
-                      <div className="flex items-center text-sm text-[var(--muted)]">
-                        <Briefcase className="mr-2 h-4 w-4 text-[var(--brand-600)]" />
-                        {job.category}
                       </div>
                       {typeof job.salaryMin === "number" && typeof job.salaryMax === "number" && (
                         <div className="flex items-center text-sm text-[var(--muted)]">
@@ -213,6 +218,12 @@ export default function JobsPage() {
                       )}
                     </div>
                     <div className="mt-4 flex flex-wrap items-center gap-2">
+                      {job.category && (
+                        <Badge className="bg-gradient-to-r from-[var(--brand-500)] to-[var(--brand-600)] text-white border-0">
+                          <Briefcase className="mr-1 h-3 w-3" />
+                          {job.category}
+                        </Badge>
+                      )}
                       <Badge className="bg-gradient-to-r from-[var(--brand-100)] to-[var(--accent-100)] text-[var(--brand-700)] border border-[var(--brand-300)]">
                         Fee: {formatCurrency(applicationFee)}
                       </Badge>

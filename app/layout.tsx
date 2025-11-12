@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}> 
+      <body className={`${inter.className} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navbar />
@@ -49,3 +49,4 @@ export default function RootLayout({
     </html>
   );
 }
+

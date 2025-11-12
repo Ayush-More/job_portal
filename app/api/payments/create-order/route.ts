@@ -72,14 +72,14 @@ export async function POST(req: Request) {
       data: {
         applicationId: null, // Will be set after successful payment
         amount: amountInCents,
-        currency: "AED",
+        currency: "INR",
         status: "PENDING",
       },
     })
 
     const order = await razorpay.orders.create({
       amount: amountInCents,
-      currency: "AED",
+      currency: "INR",
       receipt: payment.id,
       notes: { 
         jobId,

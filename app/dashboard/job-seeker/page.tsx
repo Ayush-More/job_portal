@@ -21,7 +21,6 @@ export default async function JobSeekerDashboard() {
       id: true,
       userId: true,
       phone: true,
-      location: true,
       resume: true,
       skills: true,
       experience: true,
