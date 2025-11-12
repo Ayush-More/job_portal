@@ -25,7 +25,6 @@ import {
   Phone,
   Settings
 } from "lucide-react"
-import { ThemeToggle } from "@/components/shared/theme-toggle"
 
 declare global {
   interface Window {
@@ -187,10 +186,7 @@ export function Navbar() {
           {/* Desktop Navigation - Hidden for company users on screens < lg, hidden for others on screens < md */}
           <div className={`hidden ${isCompanyUser ? "lg:flex" : "md:flex"} items-center gap-1 sm:gap-3`}>
             {status === "loading" ? (
-              <>
-                <div className="h-8 w-24 animate-shimmer rounded-lg" />
-                <ThemeToggle />
-              </>
+              <div className="h-8 w-24 animate-shimmer rounded-lg" />
             ) : session ? (
               <>
                 <Link href="/jobs">
@@ -219,7 +215,6 @@ export function Navbar() {
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </Button>
-                <ThemeToggle />
               </>
             ) : (
               <>
@@ -232,7 +227,6 @@ export function Navbar() {
                 <Link href="/register">
                   <Button className="rounded-[var(--radius-md)] bg-gradient-to-r from-[var(--brand-600)] to-[var(--secondary-500)] text-white hover:shadow-lg hover:shadow-[rgba(168,85,247,0.4)]">Get Started</Button>
                 </Link>
-                <ThemeToggle />
               </>
             )}
           </div>
@@ -289,16 +283,13 @@ export function Navbar() {
                 Ittihad Placement
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[var(--surface-muted)] transition-colors"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[var(--surface-muted)] transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Sidebar Content */}
@@ -369,8 +360,6 @@ export function Navbar() {
                 </div>
               )}
             </div>
-
-            <ThemeToggle variant="list" />
 
             {/* Industry dropdown */}
             <div className="space-y-1">
