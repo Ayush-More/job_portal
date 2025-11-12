@@ -1,11 +1,36 @@
-ADMIN
-admin@ittihad.com
-PWD: Admin123!@#
+# Ittihad Placement
 
-JOB SEEKER:
-klkda@2200freefonts.com
+A modern job placement platform built with Next.js, featuring job postings, applications, and payment processing.
 
-COMPANY:
-ncn8y@2200freefonts.com
+## Getting Started
 
-PWD: 12345678
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Set up your environment variables in `.env`
+
+3. Run the development server:
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Features
+
+- Job posting and management
+- User authentication (Job Seekers, Companies, Admin)
+- Application tracking
+- Payment processing
+- Email verification
+- Admin dashboard
+
+## Tech Stack
+
+- Next.js 15
+- TypeScript
+- Prisma (PostgreSQL)
+- NextAuth.js
+- Tailwind CSS

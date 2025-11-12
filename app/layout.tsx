@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { WhatsAppChat } from "@/components/shared/whatsapp-chat";
+import { ThemeScript } from "@/components/shared/theme-script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -30,8 +31,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
+        <ThemeScript />
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navbar />

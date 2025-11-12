@@ -133,6 +133,7 @@ model JobSeeker {
   experience      Int?     // Years of experience
   education       String?
   bio             String?
+  location        String?
   currentlyEmployed Boolean? // Whether user is currently employed
   gender            String?  // "Male" | "Female"
   createdAt       DateTime @default(now())
