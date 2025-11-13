@@ -164,16 +164,26 @@ export function Navbar() {
       className="pointer-events-none absolute -left-[9999px] -top-[9999px] opacity-0"
       aria-hidden="true"
     />
-    <nav className="sticky top-0 z-[10000] border-b-2 border-[var(--brand-200)] dark:border-[var(--border)] bg-gradient-to-r from-white/80 via-[var(--brand-50)]/80 to-white/80 dark:from-[var(--surface)]/90 dark:via-[var(--surface-muted)]/90 dark:to-[var(--surface)]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.7)] dark:supports-[backdrop-filter]:bg-[color:rgba(26,31,58,0.8)]">
+    <nav className="sticky top-0 z-[10000] border-b-2 border-[var(--brand-200)] dark:border-[var(--border)] bg-gradient-to-r from-white/80 via-[var(--brand-50)]/80 to-white/80 dark:from-[var(--surface)]/90 dark:via-[var(--surface-muted)]/90 dark:to-[var(--surface)]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[color:rgba(255,255,255,0.7)] dark:supports-[backdrop-filter]:bg-[color:rgba(26,31,58,0.8)] relative">
+      {/* UAE Flag - Fixed in upper right corner */}
+      <div className="absolute top-2 right-2 sm:top-3 sm:right-4 z-[10001]">
+        <div className="relative w-12 h-6 sm:w-16 sm:h-8 rounded shadow-lg overflow-hidden border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
+          <img
+            src="/flag.svg"
+            alt="UAE Flag"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-24 items-center justify-between">
           <Link href="/" className="group flex items-center space-x-4 hover:opacity-80 transition-all duration-200">
-            <div className="relative h-12 w-12 overflow-hidden rounded-lg">
+            <div className="relative h-24 w-24 overflow-hidden rounded-lg">
               <Image
                 src="/Ittihad Placement Logo.png"
                 alt="Ittihad Placement logo"
                 fill
-                sizes="(max-width: 768px) 48px, 56px"
+                sizes="(max-width: 768px) 96px, 96px"
                 className="object-contain transition-transform duration-300 group-hover:scale-110"
                 priority
               />
@@ -269,12 +279,12 @@ export function Navbar() {
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-4 border-b border-[var(--brand-200)] dark:border-[var(--border)]">
             <div className="flex items-center space-x-4">
-              <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-white">
+              <div className="relative h-24 w-24 overflow-hidden rounded-lg bg-white">
                 <Image
                   src="/Ittihad Placement Logo.png"
                   alt="Ittihad Placement logo"
                   fill
-                  sizes="48px"
+                  sizes="96px"
                   className="object-contain"
                   priority
                 />

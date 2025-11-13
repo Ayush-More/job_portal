@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100">
+  <!-- Red vertical stripe -->
+  <rect x="0" y="0" width="40" height="100" fill="#FF0000"/>
+  <!-- Green horizontal stripe -->
+  <rect x="40" y="0" width="160" height="33.33" fill="#00FF00"/>
+  <!-- White horizontal stripe -->
+  <rect x="40" y="33.33" width="160" height="33.33" fill="#FFFFFF"/>
+  <!-- Black horizontal stripe -->
+  <rect x="40" y="66.66" width="160" height="33.34" fill="#000000"/>
+</svg>
+

@@ -176,8 +176,6 @@ export default function Home() {
             <div className="flex items-center gap-12 marquee will-change-transform">
               {[
                 "/companies/comp 1.png",
-                "/companies/comp 2.png",
-                "/companies/comp 3.png",
                 "/companies/comp 4.png",
                 "/companies/comp 5.png",
                 "/companies/comp 6.png",
@@ -191,8 +189,6 @@ export default function Home() {
               ))}
               {[
                 "/companies/comp 1.png",
-                "/companies/comp 2.png",
-                "/companies/comp 3.png",
                 "/companies/comp 4.png",
                 "/companies/comp 5.png",
                 "/companies/comp 6.png",
